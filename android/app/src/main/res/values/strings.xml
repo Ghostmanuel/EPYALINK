@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EPYALINK</string>
+    <string name="title_activity_main">EPYALINK</string>
+    <string name="package_name">com.nuvemjv.epyalink</string>
+    <string name="custom_url_scheme">com.nuvemjv.epyalink</string>
+</resources>

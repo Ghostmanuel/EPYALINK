@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPYALINK — o Alibaba do Agro Angolano</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2F5233">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EPYALINK">
+<link rel="icon" href="/favicon-32.png" sizes="32x32">
+<link rel="icon" href="/icon-192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EFEEE2;--surface:#FFFFFF;--surface2:#F7F5EA;--ink:#23281F;--muted:#5B6154;--line:#DEDACB;
+  --brand:#2F5233;--brand-ink:#FFFFFF;--brand2:#A8532E;--sun:#D9A441;--sun-soft:#F6E6C4;
+  --red:#A8402C;--red-soft:#F3DCD4;--blue:#2C5A82;--blue-soft:#DAE6F0;--ok-soft:#DCE8DA;--dim:rgba(20,24,17,.55);
+  --fd:'Fraunces','Georgia',serif;--fb:'Public Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font:16px/1.5 var(--fb);-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{font-family:var(--fd);line-height:1.15;margin:0;letter-spacing:-.01em;font-weight:700}
+h1{font-size:28px}h2{font-size:21px}h3{font-size:17px;font-family:var(--fb);font-weight:700}h4{font-size:15px;font-family:var(--fb);font-weight:700}
+p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--brand)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+[hidden]{display:none!important}
+
+#auth{min-height:100vh;display:grid;place-items:center;padding:20px}
+.authbox{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:32px;width:100%;max-width:420px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--fd);font-size:26px;font-weight:800;color:var(--brand);margin-bottom:6px}
+.authbox p.sub{color:var(--muted);margin-bottom:20px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field label{font-size:13px;font-weight:600;color:var(--muted)}
+.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--surface);width:100%}
+.field textarea{resize:vertical;min-height:70px}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.roles label{border:1px solid var(--line);border-radius:8px;padding:10px 6px;text-align:center;font-size:13px;font-weight:600;cursor:pointer}
+.roles input{display:none}
+.roles label:has(input:checked){border-color:var(--brand);background:var(--ok-soft);color:var(--brand)}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:10px 16px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--brand)}
+.btn.primary{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+.btn.sun{background:var(--sun);color:#2E2200;border-color:var(--sun)}
+.btn.danger{color:var(--red);border-color:var(--red)}
+.btn.wide{width:100%;padding:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.lnk{background:none;border:0;padding:0;color:var(--brand);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.authbox .switch{text-align:center;margin-top:16px;font-size:14px;color:var(--muted)}
+.err{color:var(--red);font-weight:600;font-size:14px;min-height:1.3em;margin:4px 0}
+.ok{color:var(--brand);font-weight:600;font-size:14px}
+.chanrow{display:flex;gap:8px;margin-bottom:14px}
+.chanrow label{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px;text-align:center;font-size:13px;font-weight:600;cursor:pointer}
+.chanrow input{display:none}
+.chanrow label:has(input:checked){border-color:var(--brand);background:var(--ok-soft)}
+
+#app{display:none}
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--brand);color:#fff}
+.top .logo{color:#fff;margin:0;margin-right:auto;font-size:22px}
+.bell{position:relative;background:none;border:0;color:#fff;padding:6px;border-radius:8px;display:grid;place-items:center}
+.bell b{position:absolute;top:0;right:0;min-width:17px;height:17px;border-radius:9px;background:var(--sun);color:#2E2200;font-size:10px;display:grid;place-items:center;padding:0 3px}
+.who{font-size:13px;opacity:.9}
+.shell{display:grid;grid-template-columns:220px minmax(0,1fr);max-width:1180px;margin:0 auto;min-height:calc(100vh - 54px)}
+#nav{padding:20px 10px;display:flex;flex-direction:column;gap:2px;align-self:start;position:sticky;top:54px}
+#nav button{display:flex;justify-content:space-between;text-align:left;background:none;border:0;border-left:4px solid transparent;padding:10px 12px;border-radius:0 8px 8px 0;font-weight:500}
+#nav button.on{border-left-color:var(--sun);background:var(--surface);font-weight:700;color:var(--brand)}
+#nav .n{background:var(--red);color:#fff;border-radius:10px;min-width:19px;padding:0 5px;font-size:11px;text-align:center}
+#nav button.logout{color:var(--red);margin-top:16px}
+#main{padding:22px 20px 60px;min-width:0}
+@media (max-width:820px){.shell{display:block}#nav{position:fixed;left:0;right:0;bottom:0;top:auto;flex-direction:row;overflow-x:auto;padding:6px;background:var(--surface);border-top:1px solid var(--line);z-index:20}#nav button{flex:0 0 auto;border-left:0;border-top:3px solid transparent;border-radius:8px;font-size:13px}#nav button.on{border-top-color:var(--sun)}#nav button.logout{display:none}#main{padding:16px 14px 90px}}
+
+.ph{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.ph p{color:var(--muted);margin-top:4px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}
+.star{color:var(--sun)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.empty{border:2px dashed var(--line);border-radius:12px;padding:26px 16px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-family:var(--fd);font-size:17px;margin-bottom:4px}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+.chip.ver{background:var(--ok-soft);color:var(--brand);border-color:transparent}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.pill.ok{background:var(--ok-soft);color:var(--brand)}.pill.info{background:var(--blue-soft);color:var(--blue)}
+.pill.warn{background:var(--sun-soft);color:var(--ink)}.pill.bad{background:var(--red-soft);color:var(--red)}.pill.muted{background:var(--surface2);color:var(--muted)}
+.note{background:var(--surface2);border-left:4px solid var(--brand);padding:10px 12px;border-radius:0 8px 8px 0;font-size:14px;margin:12px 0}
+.note.warn{border-left-color:var(--sun);background:var(--sun-soft)}
+.note.bad{border-left-color:var(--red);background:var(--red-soft)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.kpi span{color:var(--muted);font-size:13px}
+.kpi b{display:block;font:800 24px var(--fd);margin-top:2px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:3px solid transparent;padding:9px 14px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tabs button.on{color:var(--brand);border-bottom-color:var(--sun)}
+.tw{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:480px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;color:var(--muted);background:var(--surface2)}
+tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+.sech{margin:26px 0 12px}
+.filters{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chips .chip{cursor:pointer;font-size:14px;padding:5px 12px}
+.chips .chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.filters input,.filters select{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+
+.tile{aspect-ratio:4/3;background:var(--t,#ddd) center/cover no-repeat;display:grid;place-items:center;font-size:46px;border-radius:8px}
+.tile.sm{width:76px;aspect-ratio:1;font-size:30px;flex:0 0 auto}
+.tile.big{width:140px;aspect-ratio:1;font-size:56px;flex:0 0 auto}
+.pc{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+.pc:hover{border-color:var(--brand)}
+.pc-top{position:relative;padding:8px 8px 0}
+.pc.out .tile{filter:grayscale(.85);opacity:.7}
+.soldout{position:absolute;left:16px;top:16px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px}
+.heart{position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:50%;border:0;background:var(--surface);font-size:17px;color:var(--red);display:grid;place-items:center}
+.pc-body{padding:10px 14px 14px;display:flex;flex-direction:column;gap:4px;flex:1}
+.price{font:800 19px var(--fd)}.price small{font:500 13px var(--fb);color:var(--muted)}
+.stock{font-size:13px;font-weight:600;color:var(--brand)}.stock.bad{color:var(--red)}
+.loc{font-size:12px;color:var(--muted)}
+.seller{margin-top:auto;padding-top:8px;border-top:1px solid var(--line);display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px}
+
+.rep{display:flex;gap:12px;align-items:flex-start}
+.av{width:48px;height:48px;border-radius:50%;background:var(--brand) center/cover;color:#fff;display:grid;place-items:center;font:700 16px var(--fd);flex:0 0 auto}
+.rn{font:700 17px var(--fd)}
+.rl{font-weight:600;font-size:13px}.rl.v{color:var(--brand)}
+.tick{display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px}
+.rr,.rs{font-size:13px;color:var(--muted)}
+
+.trail{list-style:none;margin:14px 0;padding:0;display:flex}
+.trail li{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;font-weight:600;color:var(--muted);text-align:center}
+.trail li::before{content:"";position:absolute;top:8px;left:-50%;width:100%;height:3px;background:var(--line)}
+.trail li:first-child::before{display:none}
+.trail i{position:relative;z-index:1;width:18px;height:18px;border-radius:50%;background:var(--surface);border:3px solid var(--line);font-style:normal}
+.trail li.done{color:var(--ink)}.trail li.done i{background:var(--brand);border-color:var(--brand)}.trail li.done::before,.trail li.cur::before{background:var(--brand)}
+.trail li.cur i{border-color:var(--sun);background:var(--sun);box-shadow:0 0 0 3px var(--sun-soft)}
+
+.olist{display:flex;flex-direction:column;gap:14px}
+.oc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.oc-h{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;flex-wrap:wrap}
+.oc-h small{color:var(--muted)}
+.hint{font-size:14px;color:var(--muted);margin-bottom:10px}
+.kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 18px;margin:10px 0}
+.kv div{display:flex;flex-direction:column}.kv dt{font-size:12px;color:var(--muted);font-weight:600}.kv dd{margin:0;font-weight:500}
+.kv .tot dd{font:800 17px var(--fd)}
+.code{display:inline-block;font:700 22px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;background:var(--sun-soft);border:2px dashed var(--sun);border-radius:8px;padding:3px 12px}
+.evd{background:var(--surface2);border-radius:8px;padding:12px;margin:12px 0}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+details.log{margin-top:10px;font-size:14px}details.log summary{cursor:pointer;color:var(--muted);font-weight:600}
+details.log ul{margin:8px 0 0;padding-left:18px;color:var(--muted)}
+
+#modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px}
+.ov{position:absolute;inset:0;background:var(--dim)}
+.dlg{position:relative;background:var(--surface);border-radius:14px;width:min(680px,100%);max-height:calc(100vh - 30px);overflow:auto;padding:22px}
+.dlg .x{position:absolute;right:10px;top:10px;width:34px;height:34px;border:0;background:var(--surface2);border-radius:50%;font-size:20px}
+.dlg h2{margin-bottom:8px;padding-right:34px}
+.dlg .m{color:var(--muted);margin-bottom:10px}
+.sec{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0 0 12px}
+.opt{display:flex;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.opt:has(input:checked){border-color:var(--brand);background:var(--surface2)}
+.opt small{color:var(--muted);display:block}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.blk{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:12px}
+.blk input,.blk select,.blk textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-weight:400;color:var(--ink);width:100%}
+.sum{background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:14px}
+.sum div{display:flex;justify-content:space-between;padding:2px 0}
+.sum .t{font:800 18px var(--fd);border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+.sp{display:flex;gap:2px;margin:4px 0 10px}
+.sp button{background:none;border:0;font-size:32px;line-height:1;color:var(--line)}
+.sp button.on{color:var(--sun)}
+.pv img{max-width:100%;max-height:140px;border-radius:8px;margin-top:8px}
+.dlg img.full{width:100%;border-radius:8px}
+
+.plist{display:flex;flex-direction:column;gap:10px}
+.pr-row{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.pr-i{flex:1;min-width:0}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:6px 0}
+.bar i{display:block;height:100%;background:var(--brand);font-style:normal}
+.bl{display:grid;grid-template-columns:110px 1fr 36px;gap:8px;align-items:center;font-size:14px}
+.bl .bar{margin:0}
+
+.fban{height:100px;border-radius:12px 12px 0 0;background:repeating-linear-gradient(100deg,var(--brand) 0 14px,#3B6640 14px 28px)}
+.fhero{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-bottom:20px}
+.fbody{padding:16px}
+.fstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin:14px 0}
+.fstats div{background:var(--surface2);border-radius:8px;padding:10px}.fstats b{display:block;font:800 19px var(--fd)}.fstats span{font-size:12px;color:var(--muted)}
+.gal{display:flex;gap:8px;flex-wrap:wrap}
+.gal button{width:120px;height:90px;border-radius:8px;border:0;background:center/cover}
+.rev{border-bottom:1px solid var(--line);padding:10px 0}.rev:last-child{border:0}
+.back{background:none;border:0;color:var(--brand);font-weight:600;padding:0 0 12px}
+
+.chat{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;min-height:440px}
+.tl{display:flex;flex-direction:column;gap:8px}
+.th{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-align:left;display:flex;flex-direction:column;gap:2px;width:100%}
+.th.on{border-color:var(--brand);background:var(--surface2)}
+.th b{font-size:14px}.th small{color:var(--muted)}.th .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-left:6px}
+.conv{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-height:440px}
+.ctx{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--sun-soft);border-radius:12px 12px 0 0}
+.ctx small{display:block;color:var(--muted)}.ctx b{font:700 16px var(--fd)}
+.msgs{flex:1;padding:14px;display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:380px}
+.msg{max-width:80%;padding:8px 12px;border-radius:12px;background:var(--surface2)}
+.msg.me{align-self:flex-end;background:var(--brand);color:#fff}
+.msg small{display:block;font-size:11px;opacity:.7}
+.composer{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+.composer input{flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+@media (max-width:820px){.chat{display:block}.chat .tl.hideM,.chat .conv.hideM{display:none}}
+
+#np{position:fixed;inset:0;z-index:40}
+.nov{position:absolute;inset:0}
+.npp{position:absolute;right:12px;top:60px;width:min(370px,calc(100% - 24px));max-height:70vh;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.npp header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.ni{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 14px}
+.ni.un{background:var(--surface2)}
+.ni .g{flex:0 0 26px;height:26px;border-radius:50%;background:var(--ok-soft);color:var(--brand);display:grid;place-items:center;font-size:12px;font-weight:700}
+.ni small{color:var(--muted);display:block}
+#toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:60;font-size:14px;max-width:90%;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+@media (min-width:821px){#toast{bottom:24px}}
+.loading{text-align:center;color:var(--muted);padding:40px}
+.imgbtn{border:0;padding:0;background:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div id="auth">
+  <div class="authbox">
+    <div class="logo">🌱 EPYALINK</div>
+    <div id="authView"></div>
+  </div>
+</div>
+
+<div id="app">
+  <header class="top">
+    <div class="logo">🌱 EPYALINK</div>
+    <span class="who" id="whoLabel"></span>
+    <button class="bell" id="bellBtn" aria-label="Notificações">
+      <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+      <b id="bellN" hidden></b>
+    </button>
+  </header>
+  <div class="shell">
+    <nav id="nav" aria-label="Principal"></nav>
+    <main id="main"></main>
+  </div>
+</div>
+
+<div id="np" hidden></div>
+<div id="modal" hidden></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>Math.round(Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+const kz=n=>fmt(n)+' Kz';
+const dec=n=>Number(n||0).toFixed(1).replace('.',',');
+const H=3600e3,D=24*H;
+const MONTHS=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+const UNIT1={kg:'kg',toneladas:'tonelada',sacos:'saco',unidades:'unidade'};
+const qtyTxt=(q,u)=>fmt(q)+' '+(Number(q)===1?(UNIT1[u]||u):u);
+const when=ts=>{if(!ts)return '';const t=new Date(ts).getTime(),d=Date.now()-t;if(d<6e4)return 'agora';if(d<H)return 'há '+Math.floor(d/6e4)+' min';if(d<D)return 'há '+Math.floor(d/H)+' h';if(d<2*D)return 'ontem';const x=new Date(t);return x.getDate()+' '+MONTHS[x.getMonth()];};
+const stamp=ts=>{if(!ts)return '—';const x=new Date(ts);return x.getDate()+' '+MONTHS[x.getMonth()]+' '+x.getFullYear()+', '+String(x.getHours()).padStart(2,'0')+':'+String(x.getMinutes()).padStart(2,'0');};
+const EMO={Milho:'🌽',Feijão:'🫘',Tomate:'🍅',Mandioca:'🥔',Café:'☕',Outros:'🌿'};
+const TONE={Milho:'#E9DE9E',Feijão:'#DCC6AE',Tomate:'#E7B4A3',Mandioca:'#E3D8B9',Café:'#C6AE96',Outros:'#C6DBAE'};
+const CATS=['Milho','Feijão','Tomate','Mandioca','Café','Outros'];
+const UNITS=['kg','toneladas','sacos','unidades'];
+const PROV=['Luanda','Huambo','Malanje','Bié','Cuanza Sul','Benguela'];
+const PROV_LL={Luanda:[-8.84,13.23],Huambo:[-12.78,15.74],Malanje:[-9.54,16.34],'Bié':[-12.38,16.93],'Cuanza Sul':[-11.2,13.84],Benguela:[-12.58,13.41]};
+const KG={kg:1,toneladas:1000,sacos:60,unidades:1.5};
+const FARM_TYPE={PRODUTOR:'Produtor',EMPRESA:'Empresa',COMERCIANTE:'Comerciante'};
+const MODE_LBL={RECOLHA:'Comprador recolhe',VENDEDOR:'Vendedor entrega',AGROLINK:'Transportadora interprovincial',ESTAFETA:'Estafeta urbano'};
+const ZONES=['Centro','Norte','Sul','Este','Oeste'];
+const RETAIL_MAX_KG=50;
+const STATUS_LBL={PENDING_PAYMENT:['Pagamento pendente','warn'],PAID:['Pago · em custódia','info'],ACCEPTED:['Aceite','info'],CARRIER_OK:['Transportador atribuído','info'],IN_TRANSIT:['Em transporte','info'],DELIVERED:['Entregue · a aguardar confirmação','warn'],CONFIRMED:['Concluído · custódia libertada','ok'],RATED:['Concluído e avaliado','ok'],DISPUTED:['Em disputa','bad'],REFUNDED:['Reembolsado','muted'],CANCELLED:['Cancelado','muted']};
+function km(a,b){if(a===b)return 30;const A=PROV_LL[a],B=PROV_LL[b];if(!A||!B)return 50;const r=x=>x*Math.PI/180;const h=Math.sin(r(B[0]-A[0])/2)**2+Math.cos(r(A[0]))*Math.cos(r(B[0]))*Math.sin(r(B[1]-A[1])/2)**2;return Math.round(2*6371*Math.asin(Math.sqrt(h))*1.3/10)*10;}
+function feeFor(unit,qty,from,to){const w=qty*(KG[unit]||1);return Math.round((4000+km(from,to)*(25+Math.min(w,20000)*.02))/100)*100;}
+function retailFee(d){return Math.round((500+150*d)/50)*50;}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),3400);}
+
+/* ---------- API ---------- */
+let TOKEN=localStorage.getItem('al_token')||null;
+async function api(path,opts={}){
+  const headers={'Content-Type':'application/json',...(opts.headers||{})};
+  if(TOKEN)headers.Authorization='Bearer '+TOKEN;
+  let res;
+  try{res=await fetch('/api'+path,{...opts,headers});}
+  catch{throw new Error('Sem ligação ao servidor. Tenta novamente.');}
+  let data=null;
+  try{data=await res.json();}catch{}
+  if(!res.ok)throw new Error((data&&data.error)||('Ocorreu um erro ('+res.status+').'));
+  return data;
+}
+function setToken(t){TOKEN=t;if(t)localStorage.setItem('al_token',t);else localStorage.removeItem('al_token');}
+function readImage(file,cb){const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.75));};im.onerror=()=>toast('Não foi possível ler a imagem.');im.src=r.result;};r.readAsDataURL(file);}
+
+/* ---------- state ---------- */
+const S={me:null,view:null,sub:{},f:{q:'',cat:'',prov:'',unit:'',type:'',avail:'disponivel',min:'',max:''},farmId:null,prev:null,threadId:null,notifOpen:false,modal:null,buy:{segment:'B2B',qty:1,mode:'AGROLINK',dest:'Luanda',destZone:'Centro',retailKg:1},rate:{},demand:'Milho',authMode:'login',gps:{}};
+const TMP={};
+const HOME={BUYER:'market',SELLER:'dash',CARRIER:'cdash',AGENT:'adash',ADMIN:'aover'};
+const NAV={
+ BUYER:[['market','Mercado'],['favs','Favoritos'],['orders','Meus pedidos'],['chat','Mensagens']],
+ SELLER:[['dash','Painel'],['products','Meus produtos'],['sales','Minhas vendas'],['chat','Mensagens'],['intel','Procura no mercado'],['myfarm','Minha fazenda'],['wallet','Carteira']],
+ CARRIER:[['cdash','Painel'],['fleet','Frota'],['jobs','Meus transportes'],['wallet','Carteira']],
+ AGENT:[['adash','Painel'],['apick','Recolhas'],['wallet','Carteira']],
+ ADMIN:[['aover','Visão geral'],['verif','Verificações'],['disp','Disputas'],['network','Rede logística']]
+};
+
+/* ---------- small components ---------- */
+const head=(t,s,r)=>`<div class="ph"><div><h1>${t}</h1>${s?`<p>${s}</p>`:''}</div>${r?`<div class="row">${r}</div>`:''}</div>`;
+const kpi=(l,v,s)=>`<div class="kpi"><span>${l}</span><b>${v}</b>${s?`<span class="muted" style="font-size:12px">${s}</span>`:''}</div>`;
+const empty=(t,s)=>`<div class="empty"><b>${esc(t)}</b>${s?esc(s):''}</div>`;
+const table=(cols,rows,foot)=>`<div class="tw"><table><thead><tr>${cols.map(c=>`<th class="${c[1]||''}">${c[0]}</th>`).join('')}</tr></thead><tbody>${rows.join('')||('<tr><td colspan="'+cols.length+'" class="muted">Sem dados.</td></tr>')}${foot||''}</tbody></table></div>`;
+const tile=(p,c='')=>p.photoUrl?`<div class="tile ${c}" style="background-image:url('${p.photoUrl}')"></div>`:`<div class="tile ${c}" style="--t:${TONE[p.category]||'#ccc'}"><span aria-hidden="true">${EMO[p.category]||'🌿'}</span></div>`;
+const initials=n=>(n||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const avatar=(n,src)=>src?`<span class="av" style="background-image:url('${src}')"></span>`:`<span class="av" aria-hidden="true">${esc(initials(n))}</span>`;
+const verChip=v=>v?`<span class="chip ver">✓ Verificado</span>`:`<span class="chip">Perfil normal</span>`;
+const rateTxt=(r,n)=>n?`<span><b class="star">★</b> ${dec(r)} <i class="muted">(${n})</i></span>`:`<span class="muted">Novo · sem avaliações</span>`;
+const starsHtml=n=>'<span class="star" aria-label="'+n+' estrelas">'+'★'.repeat(n)+'</span>';
+function repCard(owner,label,verified,rating,ratingCount,sales,pct,avatarUrl){
+ return `<div class="rep">${avatar(owner,avatarUrl)}<div><div class="rn">${esc(owner)}</div><div class="rl ${verified?'v':''}">${esc(label)}${verified?' verificado <span class="tick" aria-hidden="true">✓</span>':''}</div><div class="rr">${ratingCount?`<b class="star">★</b> ${dec(rating)} · ${ratingCount} avaliações`:'Novo no EPYALINK · sem avaliações'}</div><div class="rs">${sales?`📦 ${sales} vendas concluídas`+(pct!=null?` · ${pct}% dos pedidos concluídos`:''):'📦 Ainda sem vendas concluídas'}</div></div></div>`;
+}
+
+/* ---------- auth screens ---------- */
+function authView(mode){
+ S.authMode=mode||S.authMode||'login';
+ const m=S.authMode,box=$('#authView');
+ if(m==='login')box.innerHTML=`
+  <p class="sub">Entra na tua conta.</p>
+  <form id="f-login">
+   <div class="field"><label>Telefone</label><input name="phone" placeholder="+244923456789" required autocomplete="tel"></div>
+   <div class="field"><label>Password</label><input name="password" type="password" required autocomplete="current-password"></div>
+   <p class="err" id="a-err"></p>
+   <button class="btn primary wide" type="submit">Entrar</button>
+  </form>
+  <p class="switch"><button class="lnk" type="button" data-go="forgot">Esqueci-me da password</button></p>
+  <p class="switch">Ainda não tens conta? <button class="lnk" type="button" data-go="register">Criar conta</button></p>`;
+ if(m==='register')box.innerHTML=`
+  <p class="sub">Cria a tua conta no EPYALINK.</p>
+  <form id="f-register">
+   <div class="field"><label>Nome completo</label><input name="name" required></div>
+   <div class="field"><label>Telefone</label><input name="phone" placeholder="+244923456789" required></div>
+   <div class="field"><label>Password (mínimo 6 caracteres)</label><input name="password" type="password" minlength="6" required></div>
+   <div class="field"><label>Sou...</label>
+    <div class="roles" style="grid-template-columns:repeat(2,1fr)">
+     <label><input type="radio" name="role" value="BUYER" checked><span>Comprador (loja/indústria)</span></label>
+     <label><input type="radio" name="role" value="SELLER"><span>Produtor</span></label>
+     <label><input type="radio" name="role" value="CARRIER"><span>Transportadora / Estafeta</span></label>
+     <label><input type="radio" name="role" value="AGENT"><span>Ponto EPYALINK (agente rural)</span></label>
+    </div>
+   </div>
+   <div id="buyerFields" hidden>
+    <div class="field"><label>Empresa (opcional)</label><input name="companyName" placeholder="Ex.: Supermercado, indústria..."></div>
+    <div class="field"><label>NIF (opcional)</label><input name="nif"></div>
+   </div>
+   <div id="sellerFields" hidden>
+    <div class="field"><label>Nome da fazenda / empresa</label><input name="farmName"></div>
+    <div class="field"><label>Tipo</label><select name="farmType"><option value="PRODUTOR">Produtor</option><option value="EMPRESA">Empresa</option><option value="COMERCIANTE">Comerciante</option></select></div>
+    <div class="fg2"><div class="field"><label>Província</label><select name="province">${PROV.map(p=>`<option>${p}</option>`).join('')}</select></div><div class="field"><label>Município</label><input name="municipality"></div></div>
+   </div>
+   <div id="carrierFields" hidden>
+    <div class="field"><label>Nome da transportadora / estafeta</label><input name="companyName2"></div>
+    <div class="field"><label>Tipo de transporte</label>
+     <div class="chanrow">
+      <label><input type="radio" name="carrierKind" value="INTERPROVINCIAL" checked><span>🚚 Interprovincial</span></label>
+      <label><input type="radio" name="carrierKind" value="ESTAFETA"><span>🏍️ Estafeta urbano</span></label>
+     </div>
+    </div>
+    <div class="field"><label>Província</label><select name="cprovince">${PROV.map(p=>`<option>${p}</option>`).join('')}</select></div>
+   </div>
+   <div id="agentFields" hidden>
+    <div class="field"><label>Nome do Ponto EPYALINK</label><input name="pointName" placeholder="Ex.: Cantina do Kizua"></div>
+    <div class="fg2"><div class="field"><label>Província</label><select name="aprovince">${PROV.map(p=>`<option>${p}</option>`).join('')}</select></div><div class="field"><label>Município</label><input name="amunicipality"></div></div>
+   </div>
+   <p class="err" id="a-err"></p>
+   <button class="btn primary wide" type="submit">Criar conta</button>
+  </form>
+  <p class="switch">Já tens conta? <button class="lnk" type="button" data-go="login">Entrar</button></p>`;
+ if(m==='forgot')box.innerHTML=`
+  <p class="sub">Recuperar password. Vais receber um código.</p>
+  <form id="f-forgot">
+   <div class="field"><label>Telefone</label><input name="phone" placeholder="+244923456789" required></div>
+   <div class="field"><label>Enviar código por</label>
+    <div class="chanrow">
+     <label><input type="radio" name="channel" value="SMS" checked><span>📩 SMS</span></label>
+     <label><input type="radio" name="channel" value="WHATSAPP"><span>💬 WhatsApp</span></label>
+    </div>
+   </div>
+   <p class="err" id="a-err"></p>
+   <button class="btn primary wide" type="submit">Enviar código</button>
+  </form>
+  <p class="switch"><button class="lnk" type="button" data-go="login">‹ Voltar ao início de sessão</button></p>`;
+ if(m==='reset')box.innerHTML=`
+  <p class="sub">Introduz o código que recebeste${S.resetChannel==='WHATSAPP'?' no WhatsApp':' por SMS'} e escolhe uma nova password.</p>
+  <form id="f-reset">
+   <div class="field"><label>Código (6 dígitos)</label><input name="code" inputmode="numeric" maxlength="6" required></div>
+   <div class="field"><label>Nova password</label><input name="newPassword" type="password" minlength="6" required></div>
+   ${S.devHint?`<p class="ok">Modo de teste (sem KambaSMS configurada): código ${esc(S.devHint)}</p>`:''}
+   <p class="err" id="a-err"></p>
+   <button class="btn primary wide" type="submit">Repor password</button>
+  </form>
+  <p class="switch"><button class="lnk" type="button" data-go="forgot">‹ Pedir novo código</button></p>`;
+}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g)authView(g.dataset.go);});
+document.addEventListener('change',e=>{if(e.target.name==='role'){const v=e.target.value;$('#buyerFields').hidden=v!=='BUYER';$('#sellerFields').hidden=v!=='SELLER';$('#carrierFields').hidden=v!=='CARRIER';$('#agentFields').hidden=v!=='AGENT';}});
+document.addEventListener('submit',async e=>{
+ if(e.target.id==='f-login'){e.preventDefault();const f=new FormData(e.target),err=$('#a-err');err.textContent='';
+  try{const r=await api('/auth/login',{method:'POST',body:JSON.stringify({phone:f.get('phone'),password:f.get('password')})});setToken(r.token);await boot();}
+  catch(x){err.textContent=x.message;}}
+ if(e.target.id==='f-register'){e.preventDefault();const f=new FormData(e.target),err=$('#a-err'),body={name:f.get('name'),phone:f.get('phone'),password:f.get('password'),role:f.get('role')};
+  if(body.role==='BUYER'){body.companyName=f.get('companyName')||undefined;body.nif=f.get('nif')||undefined;}
+  if(body.role==='SELLER'){body.farmName=f.get('farmName');body.farmType=f.get('farmType');body.province=f.get('province');body.municipality=f.get('municipality');}
+  if(body.role==='CARRIER'){body.companyName=f.get('companyName2');body.carrierKind=f.get('carrierKind');body.province=f.get('cprovince');}
+  if(body.role==='AGENT'){body.pointName=f.get('pointName');body.province=f.get('aprovince');body.municipality=f.get('amunicipality');}
+  err.textContent='';
+  try{const r=await api('/auth/register',{method:'POST',body:JSON.stringify(body)});setToken(r.token);await boot();}
+  catch(x){err.textContent=x.message;}}
+ if(e.target.id==='f-forgot'){e.preventDefault();const f=new FormData(e.target),err=$('#a-err'),phone=f.get('phone'),channel=f.get('channel');err.textContent='';
+  try{const r=await api('/auth/forgot-password',{method:'POST',body:JSON.stringify({phone,channel})});S.resetPhone=phone;S.resetChannel=channel;S.devHint=r.devHint||null;authView('reset');}
+  catch(x){err.textContent=x.message;}}
+ if(e.target.id==='f-reset'){e.preventDefault();const f=new FormData(e.target),err=$('#a-err');err.textContent='';
+  try{await api('/auth/reset-password',{method:'POST',body:JSON.stringify({phone:S.resetPhone,code:f.get('code'),newPassword:f.get('newPassword')})});toast('Password reposta. Já podes entrar.');S.devHint=null;authView('login');}
+  catch(x){err.textContent=x.message;}}
+});
+
+/* ---------- boot ---------- */
+async function boot(){
+ if(!TOKEN){$('#auth').style.display='grid';$('#app').style.display='none';authView('login');return;}
+ try{const r=await api('/auth/me');S.me=r.user;}
+ catch{setToken(null);$('#auth').style.display='grid';$('#app').style.display='none';authView('login');return;}
+ $('#auth').style.display='none';$('#app').style.display='block';
+ $('#whoLabel').textContent=S.me.name+' · '+({BUYER:'Comprador',SELLER:'Produtor',CARRIER:'Transportadora',AGENT:'Ponto EPYALINK',ADMIN:'Administrador'}[S.me.role]);
+ S.view=HOME[S.me.role];S.sub={};
+ renderNav();await renderMain();await refreshBell();
+ clearInterval(boot.poll);boot.poll=setInterval(refreshBell,20000);
+}
+function logout(){setToken(null);clearInterval(boot.poll);location.reload();}
+
+/* ---------- nav / shell ---------- */
+function go(v){if(v==='farm'&&S.view!=='farm')S.prev=S.view;S.view=v;S.notifOpen=false;renderNav();renderMain();window.scrollTo(0,0);}
+function renderNav(){
+ const items=NAV[S.me.role].map(([v,l])=>{const on=S.view===v||(v==='myfarm'&&S.view==='farm'&&S.me.role==='SELLER'&&S.farmId===S.myFarmId);return `<button class="${on?'on':''}" data-nav="${v}">${l}</button>`;}).join('');
+ $('#nav').innerHTML=items+'<button class="logout" data-nav="logout">Sair</button>';
+}
+document.addEventListener('click',e=>{const n=e.target.closest('[data-nav]');if(n){if(n.dataset.nav==='logout')return logout();go(n.dataset.nav);}});
+$('#bellBtn').addEventListener('click',async()=>{S.notifOpen=!S.notifOpen;await renderBell();});
+async function refreshBell(){if(S.notifOpen)return renderBell();const list=await api('/notifications/mine').catch(()=>[]);const u=list.filter(n=>!n.read).length;const b=$('#bellN');b.hidden=!u;b.textContent=u;}
+async function renderBell(){
+ const np=$('#np');
+ if(!S.notifOpen){np.hidden=true;np.innerHTML='';return;}
+ np.hidden=false;np.innerHTML='<div class="nov"></div><div class="npp"><div class="loading">A carregar…</div></div>';
+ $('.nov',np).onclick=()=>{S.notifOpen=false;renderBell();};
+ let list=[];try{list=await api('/notifications/mine');}catch{}
+ const u=list.filter(n=>!n.read).length,b=$('#bellN');b.hidden=!u;b.textContent=u;
+ $('.npp',np).innerHTML=`<header><h3>Notificações</h3><button class="lnk" id="readAll">Marcar tudo como lido</button></header>${list.length?list.map(n=>`<button class="ni ${n.read?'':'un'}" data-notifid="${n.id}" data-notifview="${n.view||''}"><span class="g" aria-hidden="true">•</span><span>${esc(n.text)}<small>${when(n.createdAt||n.created_at)}</small></span></button>`).join(''):'<p class="muted" style="padding:16px">Sem notificações.</p>'}`;
+ const ra=$('#readAll');if(ra)ra.onclick=async()=>{await api('/notifications/read-all',{method:'POST'});S.notifOpen=false;await renderBell();};
+ $$('.ni',np).forEach(b2=>b2.onclick=async()=>{await api('/notifications/'+b2.dataset.notifid+'/read',{method:'POST'}).catch(()=>{});S.notifOpen=false;if(b2.dataset.notifview){if(b2.dataset.notifview==='chat')S.threadId=null;go(b2.dataset.notifview);}else renderBell();});
+}
+async function renderMain(){
+ const el=$('#main'),myView=S.view;el.innerHTML='<div class="loading">A carregar…</div>';
+ try{const html=await VIEWS[S.view]();if(S.view===myView)el.innerHTML=html;}
+ catch(err){if(S.view===myView)el.innerHTML=empty('Não foi possível carregar',err.message);}
+}
+function tabs(view,list){const cur=S.sub[view]||list[0][0];return `<div class="tabs" role="tablist">${list.map(([k,l])=>`<button class="${k===cur?'on':''}" data-tab="${view}:${k}">${l}</button>`).join('')}</div>`;}
+const curTab=(view,def)=>S.sub[view]||def;
+document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){const[view,v]=t.dataset.tab.split(':');S.sub[view]=v;renderMain();}});
+
+/* ================= MARKET (buyer) ================= */
+let marketCache=[];
+async function marketView(){
+ const qs=new URLSearchParams();
+ if(S.f.q)qs.set('q',S.f.q);if(S.f.cat)qs.set('cat',S.f.cat);if(S.f.prov)qs.set('prov',S.f.prov);
+ if(S.f.unit)qs.set('unit',S.f.unit);if(S.f.type)qs.set('type',S.f.type);if(S.f.avail)qs.set('avail',S.f.avail);
+ if(S.f.min)qs.set('min',S.f.min);if(S.f.max)qs.set('max',S.f.max);
+ marketCache=await api('/products?'+qs.toString());
+ return head('Mercado','Ligação B2B interprovincial das zonas de produção aos grandes compradores — com retalho urbano opcional.')+
+ `<div class="filters"><div class="row" style="margin-bottom:10px"><input type="search" id="f-q" placeholder="Pesquisar produto, fazenda ou local" value="${esc(S.f.q)}" style="flex:1;min-width:200px;border:1px solid var(--line);border-radius:8px;padding:9px 10px"></div>
+ <div class="chips">${['',...CATS].map(c=>`<button class="chip ${S.f.cat===c?'on':''}" data-fcat="${c}">${c||'Todos'}</button>`).join('')}</div>
+ <div class="fg">
+  <label class="f">Província<select id="f-prov"><option value="">Todas</option>${PROV.map(p=>`<option ${S.f.prov===p?'selected':''}>${p}</option>`).join('')}</select></label>
+  <label class="f">Unidade<select id="f-unit"><option value="">Todas</option>${UNITS.map(u=>`<option ${S.f.unit===u?'selected':''}>${u}</option>`).join('')}</select></label>
+  <label class="f">Vendedor<select id="f-type"><option value="">Todos</option>${Object.entries(FARM_TYPE).map(([k,v])=>`<option value="${k}" ${S.f.type===k?'selected':''}>${v}</option>`).join('')}</select></label>
+  <label class="f">Disponibilidade<select id="f-avail"><option value="disponivel" ${S.f.avail==='disponivel'?'selected':''}>Disponível</option><option value="esgotado" ${S.f.avail==='esgotado'?'selected':''}>Esgotado</option><option value="" ${!S.f.avail?'selected':''}>Todos</option></select></label>
+  <label class="f">Preço mín. (Kz)<input id="f-min" type="number" min="0" value="${esc(S.f.min)}"></label>
+  <label class="f">Preço máx. (Kz)<input id="f-max" type="number" min="0" value="${esc(S.f.max)}"></label>
+ </div></div>
+ <p class="muted" style="margin-bottom:12px">${marketCache.length} ${marketCache.length===1?'produto encontrado':'produtos encontrados'}</p>
+ ${marketCache.length?`<div class="grid">${marketCache.map(pcard).join('')}</div>`:empty('Nenhum produto com estes filtros','Tenta outra província ou limpa os filtros.')}`;
+}
+function pcard(p){const out=Number(p.qty)<=0,f=p.farm;
+ return `<article class="pc ${out?'out':''}" data-openprod="${p.id}"><div class="pc-top">${tile(p)}${out?'<span class="soldout">Esgotado</span>':''}${S.me.role==='BUYER'?`<button class="heart imgbtn" data-favtoggle="PRODUCT:${p.id}" aria-label="Guardar nos favoritos">♡</button>`:''}</div>
+ <div class="pc-body"><h3>${esc(p.name)}</h3><div class="price">${kz(p.price)}<small> /${UNIT1[p.unit]||p.unit}</small></div><div class="stock ${out?'bad':''}">${out?'Produto esgotado':'Disponível: '+qtyTxt(p.qty,p.unit)}</div>${p.retailEnabled?'<span class="chip">🏍️ Também a retalho (kg)</span>':''}${f?`<div class="loc">📍 ${esc(f.province)} → ${esc(f.municipality)} → ${esc(f.name)}</div><div class="seller"><b>${esc(f.name)}</b>${verChip(f.verified)}${rateTxt(f.rating,f.ratingCount)}</div>`:''}</div></article>`;
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-openprod]');if(c&&!e.target.closest('[data-favtoggle]'))openModal({type:'prod',id:c.dataset.openprod});});
+document.addEventListener('click',e=>{const c=e.target.closest('[data-fcat]');if(c){S.f.cat=c.dataset.fcat===S.f.cat?'':c.dataset.fcat;renderMain();}});
+document.addEventListener('change',e=>{
+ if(e.target.id==='f-prov'){S.f.prov=e.target.value;renderMain();}
+ if(e.target.id==='f-unit'){S.f.unit=e.target.value;renderMain();}
+ if(e.target.id==='f-type'){S.f.type=e.target.value;renderMain();}
+ if(e.target.id==='f-avail'){S.f.avail=e.target.value;renderMain();}
+});
+let qTimer;
+document.addEventListener('input',e=>{
+ if(e.target.id==='f-q'){S.f.q=e.target.value;clearTimeout(qTimer);qTimer=setTimeout(renderMain,350);}
+ if(e.target.id==='f-min'){S.f.min=e.target.value;clearTimeout(qTimer);qTimer=setTimeout(renderMain,500);}
+ if(e.target.id==='f-max'){S.f.max=e.target.value;clearTimeout(qTimer);qTimer=setTimeout(renderMain,500);}
+});
+document.addEventListener('click',async e=>{
+ const fv=e.target.closest('[data-favtoggle]');if(!fv)return;e.stopPropagation();
+ const[type,id]=fv.dataset.favtoggle.split(':');
+ try{const r=await api('/favorites',{method:'POST',body:JSON.stringify({type,targetId:id})});toast(r.favorited?'Guardado nos favoritos.':'Removido dos favoritos.');if(S.view==='favs')renderMain();}
+ catch(x){toast(x.message);}
+});
+
+/* ================= FAVORITES ================= */
+async function favsView(){
+ const favs=await api('/favorites/mine');
+ const prodIds=favs.filter(f=>f.type==='PRODUCT').map(f=>f.targetId);
+ const farmIds=favs.filter(f=>f.type==='FARM').map(f=>f.targetId);
+ const prods=(await Promise.all(prodIds.map(id=>api('/products/'+id).catch(()=>null)))).filter(Boolean);
+ const farms=(await Promise.all(farmIds.map(id=>api('/farms/'+id).catch(()=>null)))).filter(Boolean);
+ const fc=f=>`<div class="card"><div class="rep">${avatar(f.ownerName,f.avatarUrl)}<div><div class="rn">${esc(f.name)}</div><div class="rr">📍 ${esc(f.province)} → ${esc(f.municipality)} · ${rateTxt(f.rating,f.ratingCount)}</div><div class="row" style="margin-top:8px"><button class="btn" data-openfarm="${f.id}">Ver perfil</button><button class="btn" data-favtoggle="FARM:${f.id}">♥ Remover</button></div></div></div></div>`;
+ return head('Favoritos','Volta depressa aos produtos e vendedores que guardaste.')+
+ `<h2 class="sech">Produtos</h2>${prods.length?`<div class="grid">${prods.map(pcard).join('')}</div>`:empty('Ainda sem produtos guardados','Toca no coração de um produto no Mercado.')}
+ <h2 class="sech">Fazendas e vendedores</h2>${farms.length?`<div class="grid">${farms.map(fc).join('')}</div>`:empty('Ainda sem fazendas guardadas')}`;
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-openfarm]');if(c)openFarm(c.dataset.openfarm);});
+function openFarm(id){if(S.modal)closeModal(true);S.farmId=id;go('farm');}
+
+/* ================= ORDERS (buyer) ================= */
+function trailHtml(status){
+ const map={PENDING_PAYMENT:0,PAID:1,ACCEPTED:1,CARRIER_OK:1,IN_TRANSIT:1,DELIVERED:2,CONFIRMED:3,RATED:4};
+ const cur=map[status];if(cur==null)return '';
+ const labs=['Pagamento','Transporte','Entrega','Confirmação','Avaliação'];
+ return `<ol class="trail">${labs.map((l,i)=>`<li class="${i<cur?'done':i===cur?'cur':''}"><i></i><span>${l}</span></li>`).join('')}</ol>`;
+}
+function hintFor(o){
+ const h={PENDING_PAYMENT:'Paga para o vendedor poder preparar a encomenda.',PAID:'Valor em custódia (escrow) no EPYALINK. A aguardar que o vendedor aceite.',
+ ACCEPTED:o.mode==='AGROLINK'?'A aguardar que uma transportadora interprovincial aceite o transporte.':o.mode==='ESTAFETA'?'A aguardar que um estafeta urbano aceite a entrega.':o.mode==='VENDEDOR'?'O vendedor está a preparar a entrega.':'Pronta para recolha. O comprador dá o PIN a quem entregar.',
+ CARRIER_OK:`Transportador atribuído: ${o.driverName} · ${o.vehiclePlate}. Ainda não partiu.`,
+ IN_TRANSIT:o.near?'Fase final do percurso: o PIN já foi enviado ao comprador.':'A mercadoria está a caminho — rastreamento GPS ativo.',
+ DELIVERED:'Entrega registada.',CONFIRMED:'Entrega validada por PIN · custódia libertada. Falta avaliar a operação.',RATED:'Operação concluída.',
+ DISPUTED:'Disputa aberta. O pagamento fica retido até o administrador decidir.',REFUNDED:'O administrador decidiu reembolsar o comprador. Estoque devolvido.',CANCELLED:'Pedido cancelado. O estoque foi devolvido.'};
+ return h[o.status]||'';
+}
+function segBadge(o){return o.segment==='RETALHO'?`<span class="chip">🏍️ Retalho urbano${o.destZone?' · '+esc(o.destZone):''}</span>`:`<span class="chip">🚚 B2B interprovincial</span>`;}
+function orderCard(o,role){
+ const [lab,tone]=STATUS_LBL[o.status]||['',''];
+ const R=(k,v,c)=>`<div class="${c||''}"><dt>${k}</dt><dd>${v}</dd></div>`;
+ const qtyLabel=o.segment==='RETALHO'?fmt(o.retailKg)+' kg':qtyTxt(o.qty,o.product.unit);
+ let rows=R('Produto',`${EMO[o.product.category]||'🌿'} ${esc(o.product.name)} · ${qtyLabel}`);
+ rows+=role==='buyer'?R('Vendedor',`<button class="lnk" data-openfarm="${o.farm.id}">${esc(o.farm.name)}</button> ${verChip(o.farm.verified)}`):R('Comprador',`${esc(o.buyerName)}${o.buyerCompany?' · '+esc(o.buyerCompany):''} <span><b class="star">★</b> ${dec(o.buyerRating)} <i class="muted">(${o.buyerRatingCount||0})</i></span>`);
+ rows+=R('Entrega',MODE_LBL[o.mode]);
+ rows+=R('Origem → Destino → Distância',o.mode==='RECOLHA'?`${esc(o.farm.municipality)}, ${esc(o.farm.province)} (recolha no local)`:`${esc(o.farm.province)} → ${esc(o.destProvince)}${o.destZone?' ('+esc(o.destZone)+')':''} → ~${o.distanceKm} km`);
+ if(o.pointName)rows+=R('Ponto EPYALINK de recolha',`${esc(o.pointName)} ${o.pickupValidatedAt?'<span class="pill ok">Validado</span>':'<span class="pill warn">Por validar</span>'}`);
+ if(o.driverName&&role!=='carrier')rows+=R('Transportador',`${esc(o.driverName)} · ${esc(o.vehiclePlate)}${o.carrierName?' · '+esc(o.carrierName):''} <span class="tick" aria-hidden="true">✓</span>`);
+ if(role==='buyer'){rows+=R('Produto',kz(o.goodsTotal));rows+=R('Transporte',(o.mode==='AGROLINK'||o.mode==='ESTAFETA')?kz(o.feeTotal):(o.mode==='VENDEDOR'?'Combinado com o vendedor':'Sem custo'));if(o.platformFee>0)rows+=R('Taxa de plataforma (B2B)',kz(o.platformFee));rows+=R('Total',kz(Number(o.goodsTotal)+Number(o.feeTotal)+Number(o.platformFee||0)),'tot');}
+ if(role==='seller'){rows+=R('Valor da venda',kz(o.goodsTotal));rows+=R('Custódia & PIN SMS (~1,5%)','descontada na libertação');rows+=R('A receber (aprox.)',kz(Math.round(o.goodsTotal*0.985)),'tot');}
+ if(role==='carrier'){rows+=R('Valor do transporte',kz(o.feeTotal));const rate=o.mode==='ESTAFETA'?0.10:0.08;rows+=R('Comissão EPYALINK',`${Math.round(rate*100)}%`);rows+=R('A receber',kz(Math.round(o.feeTotal*(1-rate))),'tot');}
+ const showPinBox=role==='buyer'&&['ACCEPTED','CARRIER_OK','IN_TRANSIT'].includes(o.status);
+ const pinBox=showPinBox?`<div class="note warn"><b>PIN de entrega:</b> ${o.pin?`<span class="code">${esc(o.pin)}</span>`:(o.pinSent?'já enviado por SMS ao teu telemóvel.':'será enviado por SMS quando a entrega estiver na fase final.')}<br>Diz o PIN apenas a quem te entregar a mercadoria — o pagamento só é libertado com o PIN correto.${o.pinLocked?'<br><b>PIN bloqueado</b> por demasiadas tentativas erradas.':''} <button class="lnk" data-oact="resendpin:${o.id}" style="margin-top:4px">Reenviar PIN por SMS</button></div>`:'';
+ const ev=o.evidence?`<div class="evd"><h4>Evidências da entrega</h4><dl class="kv"><div><dt>Foto</dt><dd>${o.evidence.photo?`<button class="thumb imgbtn" data-imgview="${esc(o.evidence.photo)}" style="width:80px;height:60px;border-radius:6px;background:url('${o.evidence.photo}') center/cover;border:1px solid var(--line)"></button>`:'Sem foto'}</dd></div><div><dt>Data/hora</dt><dd>${stamp(o.evidence.at)}</dd></div><div><dt>Local aproximado</dt><dd>${esc(o.evidence.place)}</dd></div><div><dt>Entregue por</dt><dd>${esc(o.evidence.who)}</dd></div></dl></div>`:'';
+ const trackBtn=['CARRIER_OK','IN_TRANSIT','CONFIRMED','RATED'].includes(o.status)&&o.mode!=='RECOLHA'?`<button class="btn" data-track="${o.id}">📍 Ver rastreamento GPS</button>`:'';
+ return `<article class="oc" id="ord-${o.id}"><div class="oc-h"><div><h3>${EMO[o.product.category]||'🌿'} ${esc(o.product.name)} · ${qtyLabel}</h3><small>Pedido #${o.id.slice(0,8)} · ${when(o.createdAt)} · ${segBadge(o)}</small></div><span class="pill ${tone}">${lab}</span></div>${trailHtml(o.status)}<p class="hint">${hintFor(o)}</p>${pinBox}<dl class="kv">${rows}</dl>${ev}<div class="acts">${orderActions(o,role)}${trackBtn}</div><details class="log"><summary>Histórico (${o.logs.length})</summary><ul>${o.logs.map(l=>`<li>${stamp(l.at)} — ${esc(l.message)}</li>`).join('')}</ul></details></article>`;
+}
+function orderActions(o,role){
+ const B=(a,t,c)=>`<button class="btn ${c||''}" data-oact="${a}:${o.id}">${t}</button>`;let h='';const st=o.status;
+ if(role==='buyer'){
+  if(st==='PENDING_PAYMENT')h+=B('pay','Pagar agora','primary')+B('cancel','Cancelar pedido','danger');
+  if(st==='CONFIRMED')h+=B('rate','Avaliar vendedor','sun');
+  h+=B('chat','Mensagens sobre o pedido');
+  if(['PAID','ACCEPTED','CARRIER_OK','IN_TRANSIT','DELIVERED','CONFIRMED','RATED'].includes(st))h+=B('dispute','Problemas com o pedido?');
+ }
+ if(role==='seller'){
+  if(st==='PAID')h+=B('accept','Aceitar pedido','primary');
+  if(st==='ACCEPTED'&&o.mode==='VENDEDOR')h+=B('start','Iniciar entrega','primary');
+  if(st==='ACCEPTED'&&o.mode==='RECOLHA')h+=B('deliver','Confirmar entrega com PIN','primary');
+  if(st==='IN_TRANSIT'&&o.mode==='VENDEDOR')h+=(o.near?'':B('near','Estou perto do destino'))+B('checkpoint','Registar passagem em Hub')+B('deliver','Confirmar entrega com PIN','primary');
+  if(['CONFIRMED','RATED'].includes(st)&&!o.ratedBuyer)h+=B('rateBuyer','Avaliar comprador','sun');
+  h+=B('chat','Mensagens sobre o pedido');
+ }
+ if(role==='carrier'){
+  if(o.carrierId==null&&st==='ACCEPTED')h+=B('carrierAccept','Aceitar transporte','primary');
+  if(st==='CARRIER_OK')h+=B('start','Iniciar transporte','primary');
+  if(st==='IN_TRANSIT')h+=(o.near?'':B('near','Estou perto do destino'))+B('checkpoint','Registar passagem em Hub')+B('gps','📡 Partilhar localização')+B('deliver','Confirmar entrega com PIN','primary');
+ }
+ if(role==='agent'&&!o.pickupValidatedAt&&['ACCEPTED','CARRIER_OK','IN_TRANSIT'].includes(st))h+=B('validatepickup','Validar recolha','primary');
+ return h;
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-imgview]');if(c)openModal({type:'img',src:c.dataset.imgview,title:'Evidência'});});
+async function ordersView(){
+ const t=curTab('orders','list');
+ if(t==='disputes'){const rows=await api('/disputes/mine');return head('Meus pedidos')+tabs('orders',[['list','Meus pedidos'],['disputes','Disputas']])+
+  (rows.length?`<div class="olist">${(await Promise.all(rows.map(async d=>{const o=await api('/orders/'+d.order_id);return dispCard(d,o,false);}))).join('')}</div>`:empty('Sem disputas','Se algo correr mal, usa "Problemas com o pedido?" no pedido.'));}
+ const rows=await api('/orders/mine');
+ return head('Meus pedidos','Cada operação fica registada do pagamento à avaliação.')+tabs('orders',[['list','Meus pedidos'],['disputes','Disputas']])+
+ (rows.length?`<div class="olist">${rows.map(o=>orderCard(o,'buyer')).join('')}</div>`:empty('Ainda sem pedidos','Escolhe um produto no Mercado.'));
+}
+function dispCard(d,o,admin){
+ const open=d.state==='ABERTA'||d.state==='EVIDENCIAS_PEDIDAS';
+ const STL={ABERTA:'Aberta',EVIDENCIAS_PEDIDAS:'Evidências pedidas',REEMBOLSADO:'Reembolsado',PAGAMENTO_LIBERTADO:'Pagamento libertado'};
+ return `<article class="oc"><div class="oc-h"><div><h3>${esc(d.type)}</h3><small>Pedido #${d.order_id.slice(0,8)} · ${o?EMO[o.product.category]+' '+esc(o.product.name)+' '+qtyTxt(o.qty,o.product.unit):''} · ${when(d.created_at)}</small></div><span class="pill ${open?'bad':'muted'}">${STL[d.state]||d.state}</span></div>
+ <p style="margin:10px 0">${esc(d.text)}</p>${d.photo_url?`<button class="imgbtn" data-imgview="${esc(d.photo_url)}" style="width:80px;height:60px;border-radius:6px;background:url('${d.photo_url}') center/cover;border:1px solid var(--line)"></button>`:''}
+ ${admin&&o?`<dl class="kv"><div><dt>Comprador</dt><dd>${esc(o.buyerName)}</dd></div><div><dt>Vendedor</dt><dd>${esc(o.farm.name)} ${verChip(o.farm.verified)}</dd></div><div><dt>Valor retido</dt><dd>${kz(Number(o.goodsTotal)+Number(o.feeTotal))}</dd></div><div><dt>Entrega</dt><dd>${MODE_LBL[o.mode]}${o.driverName?' · '+esc(o.driverName):''}</dd></div></dl>${open?`<div class="acts"><button class="btn primary" data-dact="refund:${d.id}">Reembolsar comprador</button><button class="btn" data-dact="release:${d.id}">Libertar pagamento ao vendedor</button><button class="btn" data-dact="more:${d.id}">Pedir mais evidências</button></div>`:''}`:''}</article>`;
+}
+document.addEventListener('click',async e=>{
+ const c=e.target.closest('[data-oact]');if(!c)return;
+ const[act,id]=c.dataset.oact.split(':');
+ try{
+  if(act==='pay')return openModal({type:'pay',id});
+  if(act==='cancel'){await api('/orders/'+id+'/cancel',{method:'POST'});toast('Pedido cancelado. Estoque devolvido.');renderMain();return;}
+  if(act==='accept')return openModal({type:'acceptOrder',id});
+  if(act==='start'){await api('/orders/'+id+'/start',{method:'POST'});toast('Transporte iniciado.');renderMain();return;}
+  if(act==='near'){await api('/orders/'+id+'/near',{method:'POST'});toast('PIN enviado ao comprador por SMS.');renderMain();return;}
+  if(act==='deliver')return openModal({type:'deliver',id});
+  if(act==='confirm'){await api('/orders/'+id+'/confirm',{method:'POST'});toast('Recebimento confirmado.');S.rate={};openModal({type:'rate',id});return;}
+  if(act==='rate'){S.rate={};return openModal({type:'rate',id});}
+  if(act==='rateBuyer'){S.rate={};return openModal({type:'rateBuyer',id});}
+  if(act==='dispute')return openModal({type:'dispute',id});
+  if(act==='carrierAccept')return openModal({type:'carrierAccept',id});
+  if(act==='resendpin'){const r=await api('/orders/'+id+'/resend-pin',{method:'POST'});toast(r.devCode?'PIN (modo teste): '+r.devCode:'PIN reenviado por SMS.');renderMain();return;}
+  if(act==='checkpoint')return openModal({type:'checkpoint',id});
+  if(act==='gps')return toggleGps(id);
+  if(act==='validatepickup'){await api('/orders/'+id+'/validate-pickup',{method:'POST'});toast('Recolha validada.');renderMain();return;}
+  if(act==='chat'){const o=await api('/orders/'+id);const r=await api('/threads',{method:'POST',body:JSON.stringify({productId:o.product.id,orderId:o.id})});S.threadId=r.id;closeModal(true);go('chat');return;}
+ }catch(x){toast(x.message);}
+});
+document.addEventListener('click',e=>{const c=e.target.closest('[data-track]');if(c)openModal({type:'track',id:c.dataset.track});});
+document.addEventListener('click',async e=>{
+ const c=e.target.closest('[data-dact]');if(!c)return;const[how,id]=c.dataset.dact.split(':');
+ try{await api('/disputes/'+id+'/resolve',{method:'POST',body:JSON.stringify({how})});toast('Decisão registada.');renderMain();}catch(x){toast(x.message);}
+});
+
+/* ================= CHAT ================= */
+async function chatView(){
+ const list=await api('/threads/mine');
+ const cur=S.threadId?await api('/threads/'+S.threadId).catch(()=>null):null;
+ const item=t=>`<button class="th ${cur&&cur.id===t.id?'on':''}" data-openthread="${t.id}"><b>${EMO[t.product.category]||'🌿'} ${esc(t.product.name)} — ${qtyTxt(t.qty||0,t.product.unit)}</b><small>${kz(t.product.price)} · ${esc(S.me.role==='BUYER'?'':t.buyerName)}${t.unread?'<span class="dot" aria-label="não lida"></span>':''}</small><small>${t.lastMessage?esc(t.lastMessage.text.slice(0,48)):'Sem mensagens'}</small></button>`;
+ let conv;
+ if(cur){
+  conv=`<section class="conv"><div class="ctx"><small>Conversa sobre:</small><b>${EMO[cur.product.category]||'🌿'} ${esc(cur.product.name)}</b><small>${kz(cur.product.price)}/${UNIT1[cur.product.unit]||cur.product.unit}${cur.orderId?' · pedido #'+cur.orderId.slice(0,8):''}</small><div class="row" style="margin-top:6px"><button class="lnk" id="chatBack">‹ Todas as conversas</button></div></div>
+  <div class="msgs" id="msgs">${cur.messages.length?cur.messages.map(m=>`<div class="msg ${m.senderRole===cur.myRole?'me':''}"><small>${m.senderRole==='buyer'?esc(cur.myRole==='buyer'?'Tu':'Comprador'):esc(cur.myRole==='seller'?'Tu':'Vendedor')} · ${when(m.createdAt)}</small>${esc(m.text)}</div>`).join(''):'<p class="muted">Escreve a primeira mensagem sobre este produto.</p>'}</div>
+  <div class="composer"><input id="msgIn" placeholder="Escrever mensagem" autocomplete="off"><button class="btn primary" id="msgSend">Enviar</button></div></section>`;
+ } else conv=`<section class="conv">${empty('Escolhe uma conversa','Cada conversa mostra o produto e a quantidade.')}</section>`;
+ return head('Mensagens','Cada conversa está ligada a um produto ou pedido.')+
+ (list.length?`<div class="chat"><div class="tl ${cur?'hideM':''}">${list.map(item).join('')}<p class="hint">Combina pagamentos e entregas dentro do EPYALINK.</p></div><div class="${cur?'':'hideM'}">${conv}</div></div>`:empty('Ainda sem conversas',S.me.role==='BUYER'?'Abre um produto e toca em "Perguntar ao vendedor".':''));
+}
+document.addEventListener('click',e=>{
+ const c=e.target.closest('[data-openthread]');if(c){S.threadId=c.dataset.openthread;renderMain();}
+ if(e.target.id==='chatBack'){S.threadId=null;renderMain();}
+});
+document.addEventListener('click',async e=>{if(e.target.id!=='msgSend')return;await sendMsg();});
+document.addEventListener('keydown',e=>{if(e.target.id==='msgIn'&&e.key==='Enter'){e.preventDefault();sendMsg();}});
+async function sendMsg(){
+ const inp=$('#msgIn');if(!inp)return;const text=inp.value.trim();if(!text)return;
+ try{await api('/threads/'+S.threadId+'/messages',{method:'POST',body:JSON.stringify({text})});inp.value='';await renderMain();const m=$('#msgs');if(m)m.scrollTop=m.scrollHeight;const i=$('#msgIn');if(i)i.focus();}
+ catch(x){toast(x.message);}
+}
+
+/* ================= SELLER ================= */
+async function dashView(){
+ const [orders,products,farm]=await Promise.all([api('/orders/mine'),api('/products/mine/list'),api('/farms/me/mine')]);
+ const live=o=>['PAID','ACCEPTED','CARRIER_OK','IN_TRANSIT','DELIVERED','CONFIRMED','RATED'].includes(o.status);
+ const recent=orders.filter(o=>live(o)&&Date.now()-new Date(o.createdAt).getTime()<30*D);
+ const sales=recent.reduce((a,o)=>a+Number(o.goodsTotal),0);
+ const pend=orders.filter(o=>o.status==='PAID').length;
+ const by={};recent.forEach(o=>{by[o.product.name]=(by[o.product.name]||0)+Number(o.goodsTotal);});
+ const top=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,3),mx=top[0]?top[0][1]:1;
+ const todo=orders.filter(o=>o.status==='PAID'||(o.status==='ACCEPTED'&&o.mode!=='AGROLINK')||(o.status==='IN_TRANSIT'&&o.mode==='VENDEDOR'));
+ S.myFarmId=farm?farm.id:null;
+ return head('Painel do produtor',farm?`Olá, ${esc(S.me.name)}. Aqui está o resumo da ${esc(farm.name)}.`:'')+
+ `<div class="kpis">${kpi('Vendas (30 dias)',kz(sales),recent.length+' pedidos')}${kpi('Produtos ativos',products.filter(p=>p.qty>0).length,'de '+products.length+' publicados')}${kpi('Pedidos pendentes',pend,pend?'a aguardar a tua aceitação':'tudo em dia')}</div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"><div class="card"><h3 style="margin-bottom:12px">Produtos mais vendidos</h3>${top.length?top.map(([n,v])=>`<div class="bl"><span>${esc(n)}</span><div class="bar"><i style="width:${Math.round(v/mx*100)}%"></i></div><span></span></div><div class="muted" style="font-size:13px;margin:-2px 0 8px 118px">${kz(v)}</div>`).join(''):'<p class="muted">Ainda sem vendas neste período.</p>'}</div>
+ <div class="card"><h3 style="margin-bottom:12px">A tua reputação</h3>${farm?repCard(S.me.name,'Produtor',farm.verified,farm.rating,farm.ratingCount,farm.salesCount,farm.completedRate,farm.avatarUrl):empty('Cria o perfil da tua fazenda')}<div class="row" style="margin-top:12px"><button class="btn" data-nav="myfarm">Ver perfil da fazenda</button></div></div></div>
+ <h2 class="sech">Precisa da tua atenção</h2>${todo.length?`<div class="olist">${todo.map(o=>orderCard(o,'seller')).join('')}</div>`:empty('Nada pendente','Novos pedidos pagos aparecem aqui.')}`;
+}
+async function productsView(){
+ const ps=await api('/products/mine/list');
+ return head('Meus produtos','O estoque desce sozinho a cada venda e o produto fica esgotado quando chega a zero.',`<button class="btn primary" data-newprod>Novo produto</button>`)+
+ (ps.length?`<div class="plist">${ps.map(p=>{const out=p.qty<=0;return `<article class="pr-row">${tile(p,'sm')}<div class="pr-i"><h3>${esc(p.name)}</h3><div class="price">${kz(p.price)}<small> /${UNIT1[p.unit]||p.unit}</small></div><div class="bar" role="img" aria-label="Estoque"><i style="width:${Math.min(100,Math.round(p.qty/p.qty0*100))}%"></i></div><div class="stock ${out?'bad':''}">${out?'Produto esgotado':'Disponível: '+qtyTxt(p.qty,p.unit)+' de '+fmt(p.qty0)}</div></div><button class="btn" data-editprod="${p.id}">Editar</button></article>`;}).join('')}</div>`:empty('Ainda sem produtos','Cria o teu primeiro produto.'));
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-newprod]'))openModal({type:'newProd'});const c=e.target.closest('[data-editprod]');if(c)openModal({type:'editProd',id:c.dataset.editprod});});
+async function salesView(){
+ const t=curTab('sales','sales'),orders=await api('/orders/mine');
+ const live=o=>['PAID','ACCEPTED','CARRIER_OK','IN_TRANSIT','DELIVERED','CONFIRMED','RATED'].includes(o.status);
+ let body='';
+ if(t==='sales'){const s=[...orders].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));body=s.length?`<div class="olist">${s.map(o=>orderCard(o,'seller')).join('')}</div>`:empty('Ainda sem vendas');}
+ if(t==='comm'){const c=orders.filter(o=>['CONFIRMED','RATED'].includes(o.status)),g=c.reduce((a,o)=>a+Number(o.goodsTotal),0);
+  body=table([['Pedido'],['Data'],['Venda','r'],['Comissão 5%','r'],['Líquido','r']],c.map(o=>`<tr><td>#${o.id.slice(0,8)}</td><td>${when(o.createdAt)}</td><td class="r">${kz(o.goodsTotal)}</td><td class="r">− ${kz(o.goodsTotal*0.05)}</td><td class="r">${kz(o.goodsTotal*0.95)}</td></tr>`),`<tr><th>Total</th><th></th><th class="r">${kz(g)}</th><th class="r">− ${kz(g*0.05)}</th><th class="r">${kz(g*0.95)}</th></tr>`);}
+ if(t==='reviews'){const farm=await api('/farms/me/mine');if(!farm){body=empty('Cria primeiro o perfil da tua fazenda');}else{const full=await api('/farms/'+farm.id);body=`<div class="kpis">${kpi('Avaliação da fazenda',`<span class="star">★</span> ${dec(full.rating)}`,full.ratingCount+' avaliações')}</div>`+revList(full.reviews);}}
+ return head('Minhas vendas','Pedidos, recebimentos, comissões e avaliações.')+tabs('sales',[['sales','Minhas vendas'],['comm','Minhas comissões'],['reviews','Minhas avaliações']])+body;
+}
+const revList=l=>l.length?`<div class="card">${l.map(r=>`<div class="rev">${starsHtml(r.stars)} <b>${esc(r.from_name||r.fromName)}</b> <small class="muted">· ${when(r.created_at||r.createdAt)}</small>${r.text?`<p>${esc(r.text)}</p>`:''}</div>`).join('')}</div>`:empty('Sem avaliações ainda');
+function chg(t){const a=x=>x.reduce((s,v)=>s+v,0)/x.length;const first=a(t.slice(0,4))||1;return Math.round((a(t.slice(-4))/first-1)*100);}
+function spark(t){const w=300,h=70,mn=Math.min(...t)-4,mx=Math.max(...t)+4||1;const pts=t.map((v,i)=>`${Math.round(i*(w/(t.length-1)))},${Math.round(h-(v-mn)/(mx-mn)*h)}`).join(' ');return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="80"><polyline points="${pts}" fill="none" stroke="var(--brand)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${w}" cy="${pts.split(' ').pop().split(',')[1]}" r="5" fill="var(--sun)"/></svg>`;}
+async function intelView(){
+ const d=await api('/market/demand/'+encodeURIComponent(S.demand)),top=await api('/market/top-category').catch(()=>null);
+ const rk=Object.entries(d.ranking).sort((a,b)=>b[1]-a[1]);
+ const verb=d.pctChange>=5?`aumentou ${d.pctChange}%`:d.pctChange<=-5?`diminuiu ${Math.abs(d.pctChange)}%`:'manteve-se estável';
+ const trend=d.pctChange>=5?'a subir':d.pctChange<=-5?'a descer':'estável';
+ const farm=await api('/farms/me/mine').catch(()=>null);
+ const pos=farm?rk.findIndex(r=>r[0]===farm.province)+1:0;
+ return head('Procura no mercado','Indicadores calculados a partir de pedidos e pesquisas reais. Não são previsões garantidas.')+
+ `<div class="chips">${CATS.map(c=>`<button class="chip ${S.demand===c?'on':''}" data-demand="${c}">${EMO[c]} ${c}</button>`).join('')}</div>
+ <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+ <div class="card"><h3>📈 Procura por ${S.demand.toLowerCase()}</h3><p style="margin:8px 0">Nas últimas 4 semanas, a procura ${verb} face às 4 semanas anteriores.</p>${farm&&pos?`<p class="muted">Na tua região, ${farm.province}, é a ${pos}.ª maior procura entre as 6 províncias.</p>`:''}</div>
+ <div class="card"><h3>📊 Mais pesquisado esta semana</h3>${top?`<p style="margin:8px 0"><b>${EMO[top.category]||''} ${top.category}</b> tem o índice de procura mais alto.</p>`:'<p class="muted">Ainda sem dados suficientes esta semana.</p>'}</div>
+ <div class="card"><h3>🔮 Tendência de procura</h3>${spark(d.series)}<p class="muted">Últimas 8 semanas · tendência ${trend}.</p></div>
+ <div class="card"><h3>📍 Regiões com maior procura</h3><div style="margin-top:10px">${rk.map(([r,v])=>`<div class="bl"><span>${r}</span><div class="bar"><i style="width:${v}%"></i></div><span>${v}</span></div>`).join('')}</div></div></div>
+ <div class="note">Índice de 0 a 100 calculado com pedidos e pesquisas reais no EPYALINK. Com mais utilizadores, torna-se mais preciso.</div>`;
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-demand]');if(c){S.demand=c.dataset.demand;renderMain();}});
+async function farmView(){
+ const f=await api('/farms/'+S.farmId);
+ const mine=S.me.role==='SELLER'&&f.ownerId===S.me.id;
+ const isFav=mine?false:(await api('/favorites/mine').catch(()=>[])).some(x=>x.type==='FARM'&&x.targetId===f.id);
+ const own=mine?`<div class="row" style="margin-top:12px"><label class="btn" style="cursor:pointer">Alterar foto de perfil<input type="file" accept="image/*" data-fileavatar hidden></label><label class="btn" style="cursor:pointer">Adicionar foto da fazenda<input type="file" accept="image/*" data-filefarmphoto hidden></label><button class="btn" data-editabout>Editar descrição</button><button class="btn" data-reqverify="SELLER">Pedir verificação</button></div>`
+   :S.me.role==='BUYER'?`<div class="row" style="margin-top:12px"><button class="btn" data-favtoggle="FARM:${f.id}">${isFav?'♥ Guardado':'♡ Guardar'}</button></div>`:'';
+ return `<button class="back" data-navback>‹ Voltar</button><section class="fhero"><div class="fban"></div><div class="fbody"><div class="row" style="justify-content:space-between"><h1>${esc(f.name)}</h1>${verChip(f.verified)}</div><p class="loc" style="margin:6px 0 12px">📍 ${esc(f.province)} → ${esc(f.municipality)}</p>${repCard(f.ownerName,FARM_TYPE[f.type]||f.type,f.verified,f.rating,f.ratingCount,f.salesCount,f.completedRate,f.avatarUrl)}
+ <div class="fstats"><div><b>${f.ratingCount?dec(f.rating):'—'}</b><span>Avaliação</span></div><div><b>${f.salesCount}</b><span>Vendas realizadas</span></div><div><b>${f.products.filter(p=>p.qty>0).length}</b><span>Produtos disponíveis</span></div></div>
+ <p id="aboutTxt">${esc(f.about||'')}</p><p class="muted" style="margin-top:8px;font-size:13px">🔒 A localização é mostrada só até ao município.</p>${own}</div></section>
+ <h2 class="sech">📦 Produtos disponíveis</h2>${f.products.length?`<div class="grid">${f.products.map(p=>pcard({...p,farm:{id:f.id,name:f.name,province:f.province,municipality:f.municipality,verified:f.verified,rating:f.rating,ratingCount:f.ratingCount}})).join('')}</div>`:empty('Sem produtos publicados')}
+ <h2 class="sech">📷 Fotos</h2>${f.photos.length?`<div class="gal">${f.photos.map(p=>`<button style="background-image:url('${p.url}')" data-imgview="${esc(p.url)}"></button>`).join('')}</div>`:empty('Ainda sem fotos')}
+ <h2 class="sech">⭐ Avaliações</h2>${revList(f.reviews)}`;
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-navback]'))go(S.prev&&S.prev!=='farm'?S.prev:HOME[S.me.role]);});
+document.addEventListener('click',e=>{if(e.target.closest('[data-editabout]'))openModal({type:'editAbout'});});
+document.addEventListener('click',async e=>{
+ const c=e.target.closest('[data-reqverify]');if(!c)return;
+ const docs=prompt('Lista os documentos enviados, separados por vírgula (ex.: BI, Alvará, NIF):');
+ if(!docs)return;
+ try{await api('/admin/verifications',{method:'POST',body:JSON.stringify({docs:docs.split(',').map(s=>s.trim()).filter(Boolean)})});toast('Pedido de verificação enviado.');}
+ catch(x){toast(x.message);}
+});
+
+/* ================= CARRIER ================= */
+async function cdashView(){
+ const [c,orders]=await Promise.all([api('/carrier/me'),api('/orders/mine')]);
+ const open=orders.filter(o=>o.carrierId==null&&o.status==='ACCEPTED'),mine=orders.filter(o=>o.carrierId===c.id);
+ const active=mine.filter(o=>['CARRIER_OK','IN_TRANSIT'].includes(o.status)),done=mine.filter(o=>['DELIVERED','CONFIRMED','RATED'].includes(o.status));
+ const net=mine.filter(o=>['CONFIRMED','RATED'].includes(o.status)).reduce((a,o)=>a+Number(o.feeTotal)*0.92,0);
+ return head(c.companyName,'Painel da empresa transportadora.')+
+ `<div class="card" style="margin-bottom:16px"><div class="rep"><span class="av" aria-hidden="true">${esc(initials(c.companyName))}</span><div><div class="rn">${esc(c.companyName)} ${c.verified?'<span class="tick" aria-hidden="true">✓</span>':''}</div><div class="rl v">🚚 ${c.vehicles.length} veículos · 👨‍✈️ ${c.drivers.length} motoristas</div><div class="rr">📍 ${esc(c.province)} · <b class="star">★</b> ${dec(c.rating)} · ${c.ratingCount} avaliações</div><div class="rs">📦 ${c.tripsCount} entregas concluídas</div></div></div></div>
+ <div class="kpis">${kpi('Transportes disponíveis',open.length)}${kpi('Em curso',active.length)}${kpi('Entregues',done.length)}${kpi('Recebido (líquido)',kz(net))}${kpi('Motoristas livres',c.drivers.filter(d=>d.status==='disponivel').length,'de '+c.drivers.length)}${kpi('Veículos livres',c.vehicles.filter(v=>v.status==='disponivel').length,'de '+c.vehicles.length)}</div>
+ ${!c.verified?`<div class="note warn">A tua transportadora ainda não está verificada. <button class="lnk" data-reqverify="CARRIER">Pedir verificação</button></div>`:''}
+ <h2 class="sech">Transportes disponíveis</h2>${open.length?`<div class="olist">${open.map(o=>orderCard(o,'carrier')).join('')}</div>`:empty('Sem transportes novos')}`;
+}
+async function fleetView(){
+ const t=curTab('fleet','drivers'),c=await api('/carrier/me');
+ let body='';
+ if(t==='drivers')body=table([['Motorista'],['Estado']],c.drivers.map(d=>`<tr><td>${esc(d.name)}</td><td>${d.status==='viagem'?'<span class="pill info">Em viagem</span>':`<select data-drvstatus="${d.id}"><option value="disponivel" ${d.status==='disponivel'?'selected':''}>Disponível</option><option value="folga" ${d.status==='folga'?'selected':''}>Folga</option></select>`}</td></tr>`))+`<div class="card" style="margin-top:14px"><h4 style="margin-bottom:10px">Adicionar motorista</h4><div class="row"><input id="newDrvName" placeholder="Nome do motorista" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px"><button class="btn primary" id="addDrv">Adicionar</button></div></div>`;
+ if(t==='vehicles')body=table([['Matrícula'],['Tipo'],['Capacidade'],['Estado']],c.vehicles.map(v=>`<tr><td>${esc(v.plate)}</td><td>${esc(v.type)}</td><td>${v.capacity_tons} t</td><td>${v.status==='viagem'?'<span class="pill info">Em viagem</span>':`<select data-vehstatus="${v.id}"><option value="disponivel" ${v.status==='disponivel'?'selected':''}>Disponível</option><option value="manutencao" ${v.status==='manutencao'?'selected':''}>Manutenção</option></select>`}</td></tr>`))+`<div class="card" style="margin-top:14px"><h4 style="margin-bottom:10px">Adicionar veículo</h4><div class="fg2"><input id="newVehPlate" placeholder="Matrícula"><input id="newVehType" placeholder="Tipo (ex.: Camião)"></div><div class="row"><input id="newVehCap" type="number" min="0.1" step="0.1" placeholder="Capacidade (toneladas)" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px"><button class="btn primary" id="addVeh">Adicionar</button></div></div>`;
+ if(t==='docs')body=table([['Documento'],['Validade'],['Estado']],c.documents.map(d=>{const days=Math.round((new Date(d.expires_at)-Date.now())/D),s=days<0?['Expirado','bad']:days<30?['Expira em '+days+' dias','warn']:['Em dia','ok'];return `<tr><td>${esc(d.name)}</td><td>${stamp(d.expires_at).split(',')[0]}</td><td><span class="pill ${s[1]}">${s[0]}</span></td></tr>`;}))+`<div class="card" style="margin-top:14px"><h4 style="margin-bottom:10px">Adicionar documento</h4><div class="fg2"><input id="newDocName" placeholder="Nome do documento"><input id="newDocExp" type="date"></div><button class="btn primary" id="addDoc">Adicionar</button></div>`;
+ return head('Frota','Gere motoristas, veículos, documentos e disponibilidade.')+tabs('fleet',[['drivers','Motoristas'],['vehicles','Veículos'],['docs','Documentos']])+body;
+}
+document.addEventListener('change',async e=>{
+ if(e.target.dataset.drvstatus){try{await api('/carrier/drivers/'+e.target.dataset.drvstatus,{method:'PUT',body:JSON.stringify({status:e.target.value})});toast('Atualizado.');}catch(x){toast(x.message);renderMain();}}
+ if(e.target.dataset.vehstatus){try{await api('/carrier/vehicles/'+e.target.dataset.vehstatus,{method:'PUT',body:JSON.stringify({status:e.target.value})});toast('Atualizado.');}catch(x){toast(x.message);renderMain();}}
+});
+document.addEventListener('click',async e=>{
+ if(e.target.id==='addDrv'){const n=$('#newDrvName').value.trim();if(!n)return;try{await api('/carrier/drivers',{method:'POST',body:JSON.stringify({name:n})});renderMain();}catch(x){toast(x.message);}}
+ if(e.target.id==='addVeh'){const plate=$('#newVehPlate').value.trim(),type=$('#newVehType').value.trim(),cap=+$('#newVehCap').value;if(!plate||!type||!(cap>0))return toast('Preenche matrícula, tipo e capacidade.');try{await api('/carrier/vehicles',{method:'POST',body:JSON.stringify({plate,type,capacityTons:cap})});renderMain();}catch(x){toast(x.message);}}
+ if(e.target.id==='addDoc'){const name=$('#newDocName').value.trim(),exp=$('#newDocExp').value;if(!name||!exp)return toast('Preenche o nome e a validade.');try{await api('/carrier/documents',{method:'POST',body:JSON.stringify({name,expiresAt:exp})});renderMain();}catch(x){toast(x.message);}}
+});
+async function jobsView(){
+ const t=curTab('jobs','open'),c=await api('/carrier/me'),orders=await api('/orders/mine');
+ const open=orders.filter(o=>o.carrierId==null&&o.status==='ACCEPTED'),mine=orders.filter(o=>o.carrierId===c.id);
+ const body=t==='open'?(open.length?`<div class="olist">${open.map(o=>orderCard(o,'carrier')).join('')}</div>`:empty('Sem transportes disponíveis')):(mine.length?`<div class="olist">${mine.map(o=>orderCard(o,'carrier')).join('')}</div>`:empty('Ainda sem transportes'));
+ return head('Meus transportes','Aceita, inicia e conclui cada viagem com código e evidências.')+tabs('jobs',[['open','Disponíveis ('+open.length+')'],['mine','Meus transportes']])+body;
+}
+
+/* ================= ADMIN ================= */
+async function aoverView(){
+ const o=await api('/admin/overview');
+ const labels={PENDING_PAYMENT:'Pagamento pendente',PAID:'Pago, a aguardar vendedor',ACCEPTED:'Em preparação',CARRIER_OK:'Transportador atribuído',IN_TRANSIT:'Em transporte',DELIVERED:'A aguardar confirmação',CONFIRMED:'Concluído',RATED:'Concluído e avaliado',DISPUTED:'Em disputa',REFUNDED:'Reembolsado',CANCELLED:'Cancelado'};
+ const max=Math.max(1,...Object.values(o.byStatus));
+ return head('Visão geral','Pagamento → transporte → entrega → confirmação → avaliação.')+
+ `<div class="kpis">${kpi('Pedidos',o.totalOrders)}${kpi('Valor retido',kz(o.heldAmount),'a aguardar confirmação')}${kpi('Comissões ganhas',kz(o.commissionEarned))}${kpi('Disputas abertas',o.disputesOpen)}${kpi('Verificações pendentes',o.verificationsPending)}</div>
+ <div class="card"><h3 style="margin-bottom:10px">Onde estão os pedidos</h3>${Object.entries(o.byStatus).map(([k,n])=>`<div class="bl" style="grid-template-columns:220px 1fr 30px"><span>${labels[k]||k}</span><div class="bar"><i style="width:${Math.round(n/max*100)}%"></i></div><span>${n}</span></div>`).join('')||'<p class="muted">Sem pedidos ainda.</p>'}</div>`;
+}
+async function verifView(){
+ const rows=await api('/admin/verifications');
+ return head('Verificações','Perfis verificados aparecem com ✓ e ganham mais confiança dos compradores.')+
+ (rows.length?`<div class="olist">${rows.map(v=>`<article class="oc"><div class="oc-h"><div><h3>${esc(v.name)}</h3><small>${esc(v.kind)}</small></div><span class="pill ${v.state==='PENDENTE'?'warn':v.state==='APROVADO'?'ok':'bad'}">${v.state==='PENDENTE'?'Pendente':v.state==='APROVADO'?'Aprovado':'Recusado'}</span></div><p style="margin-top:8px">Documentos: ${(v.docs||[]).map(esc).join(', ')||'—'}.</p>${v.state==='PENDENTE'?`<div class="acts"><button class="btn primary" data-verifdec="approve:${v.id}">Aprovar e verificar</button><button class="btn danger" data-verifdec="reject:${v.id}">Recusar</button></div>`:''}</article>`).join('')}</div>`:empty('Sem pedidos de verificação'));
+}
+document.addEventListener('click',async e=>{
+ const c=e.target.closest('[data-verifdec]');if(!c)return;const[act,id]=c.dataset.verifdec.split(':');
+ try{await api('/admin/verifications/'+id+'/decide',{method:'POST',body:JSON.stringify({approve:act==='approve'})});toast(act==='approve'?'Perfil verificado.':'Pedido recusado.');renderMain();}catch(x){toast(x.message);}
+});
+async function dispView(){
+ const rows=await api('/disputes/mine');
+ const withOrders=await Promise.all(rows.map(async d=>({d,o:await api('/orders/'+d.order_id).catch(()=>null)})));
+ return head('Disputas','Analisa as evidências e decide. O pagamento fica retido até haver decisão.')+
+ (rows.length?`<div class="olist">${withOrders.map(({d,o})=>dispCard(d,o,true)).join('')}</div>`:empty('Sem disputas'));
+}
+
+/* ================= MODALS ================= */
+/* ================= CARTEIRA (wallet) ================= */
+const LEDGER_LBL={VENDA:'Venda',TRANSPORTE:'Transporte',COMISSAO_PONTO:'Comissão de recolha',LEVANTAMENTO:'Levantamento',CUSTODIA_PIN:'Custódia & PIN SMS (plataforma)',MARGEM_FRACIONAMENTO:'Margem de fracionamento (plataforma)',TAKE_RATE:'Take rate B2B (plataforma)',COMISSAO_TRANSPORTE:'Comissão de transporte (plataforma)',TAXA_LEVANTAMENTO:'Taxa de levantamento (plataforma)'};
+async function walletView(){
+ const w=await api('/wallet/me');
+ return head('Carteira','Saldo em Kz, vindo das operações concluídas. Levantamentos confirmados por código SMS (Cash-Out).',`<button class="btn primary" data-withdraw>Pedir levantamento</button>`)+
+ `<div class="kpis">${kpi('Saldo total',kz(w.balance))}${kpi('Disponível para levantar',kz(w.available))}${kpi('Levantamento mínimo',kz(w.minWithdraw))}</div>
+ <h2 class="sech">Movimentos</h2>${w.entries.length?table([['Data'],['Tipo'],['Nota'],['Valor','r']],w.entries.map(e=>`<tr><td>${when(e.createdAt)}</td><td>${LEDGER_LBL[e.kind]||e.kind}</td><td>${esc(e.note)}</td><td class="r" style="color:${e.amount<0?'var(--red)':'inherit'}">${e.amount<0?'− ':''}${kz(Math.abs(e.amount))}</td></tr>`)):empty('Ainda sem movimentos')}
+ <h2 class="sech">Levantamentos</h2>${w.withdrawals.length?table([['Data'],['Valor'],['Taxa'],['Estado']],w.withdrawals.map(x=>`<tr><td>${when(x.created_at)}</td><td>${kz(x.amount)}</td><td>${kz(x.fee)}</td><td><span class="pill ${x.status==='PAGO'?'ok':x.status==='CANCELADO'?'muted':'warn'}">${x.status.replace('_',' ')}</span></td></tr>`)):empty('Ainda sem levantamentos')}`;
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-withdraw]'))openModal({type:'withdraw'});});
+
+/* ================= PONTO EPYALINK (agente) ================= */
+async function adashView(){
+ const [a,orders]=await Promise.all([api('/agent/me'),api('/orders/mine')]);
+ const pending=orders.filter(o=>!o.pickupValidatedAt&&['ACCEPTED','CARRIER_OK','IN_TRANSIT'].includes(o.status));
+ return head(a.pointName,'Painel do Ponto EPYALINK rural.')+
+ `<div class="card" style="margin-bottom:16px"><div class="rep"><span class="av" aria-hidden="true">${esc(initials(a.pointName))}</span><div><div class="rn">${esc(a.pointName)} ${a.verified?'<span class="tick" aria-hidden="true">✓</span>':''}</div><div class="rl">📍 ${esc(a.municipality)}, ${esc(a.province)}</div><div class="rs">📦 ${a.validationsCount} recolhas validadas</div></div></div></div>
+ ${!a.verified?`<div class="note warn">O teu Ponto ainda não está verificado. <button class="lnk" data-reqverify="AGENT">Pedir verificação</button></div>`:''}
+ <div class="kpis">${kpi('Recolhas por validar',pending.length)}</div>
+ <h2 class="sech">Cargas à espera de recolha</h2>${pending.length?`<div class="olist">${pending.map(o=>orderCard(o,'agent')).join('')}</div>`:empty('Nada pendente')}`;
+}
+async function apickView(){
+ const orders=await api('/orders/mine');
+ return head('Recolhas','Valida cada recolha para que a comissão do Ponto seja creditada na tua carteira.')+
+ (orders.length?`<div class="olist">${orders.map(o=>orderCard(o,'agent')).join('')}</div>`:empty('Ainda sem recolhas atribuídas'));
+}
+
+/* ================= REDE LOGÍSTICA (admin) ================= */
+async function networkView(){
+ const t=curTab('network','hubs');
+ let body;
+ if(t==='hubs'){
+  const hubs=await api('/admin/hubs');
+  body=table([['Nome'],['Tipo'],['Província']],hubs.map(h=>`<tr><td>${esc(h.name)}</td><td>${h.kind==='REGIONAL'?'Hub regional':'Micro-hub urbano'}</td><td>${esc(h.province)}</td></tr>`))+
+  `<div class="card" style="margin-top:14px"><h4 style="margin-bottom:10px">Adicionar Hub</h4><div class="fg2"><input id="nh-name" placeholder="Nome"><select id="nh-kind"><option value="REGIONAL">Hub regional</option><option value="MICRO_URBANO">Micro-hub urbano</option></select></div><div class="fg2"><select id="nh-prov">${PROV.map(p=>`<option>${p}</option>`).join('')}</select><div class="row"><input id="nh-lat" type="number" step="0.0001" placeholder="Latitude" style="flex:1"><input id="nh-lng" type="number" step="0.0001" placeholder="Longitude" style="flex:1"></div></div><button class="btn primary" id="addHub">Adicionar</button></div>`;
+ } else {
+  const agents=await api('/admin/agents');
+  body=agents.length?table([['Ponto EPYALINK'],['Localização'],['Estado'],['Validações','r']],agents.map(a=>`<tr><td>${esc(a.pointName)}</td><td>${esc(a.municipality)}, ${esc(a.province)}</td><td><span class="pill ${a.verified?'ok':'muted'}">${a.verified?'Verificado':'Normal'}</span></td><td class="r">${a.validationsCount}</td></tr>`)):empty('Ainda sem Pontos EPYALINK registados');
+ }
+ return head('Rede logística','Hubs intermédios regionais, micro-hubs urbanos e Pontos EPYALINK rurais.')+tabs('network',[['hubs','Hubs'],['agents','Pontos EPYALINK']])+body;
+}
+document.addEventListener('click',async e=>{
+ if(e.target.id!=='addHub')return;
+ const name=$('#nh-name').value.trim(),kind=$('#nh-kind').value,province=$('#nh-prov').value,lat=+$('#nh-lat').value,lng=+$('#nh-lng').value;
+ if(!name||!lat||!lng)return toast('Preenche nome e coordenadas.');
+ try{await api('/admin/hubs',{method:'POST',body:JSON.stringify({name,kind,province,lat,lng})});renderMain();toast('Hub adicionado.');}catch(x){toast(x.message);}
+});
+
+/* ================= GPS: partilha de localização em viagem ================= */
+async function toggleGps(orderId){
+ if(S.gps.id===orderId){navigator.geolocation.clearWatch(S.gps.watchId);clearInterval(S.gps.flushTimer);await flushGps(orderId,true);S.gps={};toast('Partilha de localização terminada.');return;}
+ if(S.gps.id)await toggleGps(S.gps.id);
+ if(!navigator.geolocation)return toast('Este dispositivo não suporta GPS no navegador.');
+ S.gps={id:orderId,buf:[]};
+ S.gps.watchId=navigator.geolocation.watchPosition(
+  pos=>S.gps.buf.push({lat:pos.coords.latitude,lng:pos.coords.longitude,acc:pos.coords.accuracy,at:new Date(pos.timestamp).toISOString()}),
+  err=>toast('Erro de GPS: '+err.message),
+  {enableHighAccuracy:true,maximumAge:5000,timeout:15000}
+ );
+ S.gps.flushTimer=setInterval(()=>flushGps(orderId,false),15000);
+ toast('A partilhar a tua localização em tempo real.');
+}
+async function flushGps(orderId,isFinal){
+ const pts=S.gps.buf||[];if(!pts.length){if(isFinal)return;return;}
+ S.gps.buf=[];
+ try{const r=await api('/orders/'+orderId+'/location',{method:'POST',body:JSON.stringify({points:pts})});if(r.near&&!isFinal)toast('Chegaste perto do destino — PIN enviado ao comprador.');}
+ catch(x){/* falha silenciosa: tenta novamente no próximo ciclo */}
+}
+
+const VIEWS={market:marketView,favs:favsView,orders:ordersView,chat:chatView,dash:dashView,products:productsView,sales:salesView,intel:intelView,myfarm:async()=>{const f=await api('/farms/me/mine');if(!f)return empty('Cria o perfil da tua fazenda','Contacta o suporte para completares o registo.');S.farmId=f.id;S.myFarmId=f.id;return farmView();},farm:farmView,cdash:cdashView,fleet:fleetView,jobs:jobsView,wallet:walletView,adash:adashView,apick:apickView,aover:aoverView,verif:verifView,disp:dispView,network:networkView};
+
+const picker=(k,v)=>`<div class="sp" data-pickkey="${k}">${[1,2,3,4,5].map(i=>`<button type="button" class="${i<=v?'on':''}" data-star="${k}:${i}">★</button>`).join('')}</div>`;
+document.addEventListener('click',e=>{const c=e.target.closest('[data-star]');if(!c)return;const[k,v]=c.dataset.star.split(':');S.rate[k]=+v;$$('.sp[data-pickkey="'+k+'"] button').forEach((b,i)=>b.classList.toggle('on',i<+v));});
+
+async function buySummary(p){
+ const b=S.buy;
+ if(b.segment==='RETALHO'){
+  const valid=b.retailKg>=1&&b.retailKg<=RETAIL_MAX_KG;
+  if(!valid)return `<p class="err">Escolhe entre 1 e ${RETAIL_MAX_KG} kg.</p>`;
+  const goods=Math.round(b.retailKg*p.retailPriceKg);
+  return `<p class="hint">📍 Entrega em ${esc(b.destZone)}, ${esc(b.dest)} — micro-hub urbano local, por estafeta.</p><div class="sum"><div><span>${b.retailKg} kg × ${kz(p.retailPriceKg)}</span><span>${kz(goods)}</span></div><div><span>Entrega (estafeta)</span><span>calculada pela distância</span></div><div class="t"><span>Total estimado</span><span>${kz(goods)} + entrega</span></div></div><p class="hint">Pagamento em custódia; o valor só é libertado com o PIN de entrega enviado por SMS.</p>`;
+ }
+ const {qty,mode,dest}=b,valid=qty>0&&qty<=p.qty,minOk=!p.minOrder||qty>=p.minOrder,goods=valid?qty*p.price:0,fee=mode==='AGROLINK'&&valid?feeFor(p.unit,qty,p.farm.province,dest):0,platformFee=valid?Math.round(goods*0.03):0;
+ if(!valid)return `<p class="err">Escolhe uma quantidade entre 1 e ${fmt(p.qty)} ${p.unit}.</p>`;
+ if(!minOk)return `<p class="err">Pedido mínimo B2B deste produto: ${fmt(p.minOrder)} ${p.unit}.</p>`;
+ const route=mode==='RECOLHA'?`📍 Recolha em ${esc(p.farm.municipality)}, ${esc(p.farm.province)}.`:`📍 ${esc(p.farm.province)} → ${esc(dest)} → ~${km(p.farm.province,dest)} km`;
+ return `<p class="hint">${route}</p><div class="sum"><div><span>${fmt(qty)} × ${kz(p.price)}</span><span>${kz(goods)}</span></div><div><span>Transporte</span><span>${mode==='AGROLINK'?kz(fee):(mode==='VENDEDOR'?'combinado com o vendedor':'sem custo')}</span></div><div><span>Taxa de plataforma B2B (3%)</span><span>${kz(platformFee)}</span></div><div class="t"><span>Total</span><span>${kz(goods+fee+platformFee)}</span></div></div><p class="hint">O pagamento fica em custódia no EPYALINK até a entrega ser validada por PIN.</p>`;
+}
+const MOD={
+ prod:async m=>{
+  const p=await api('/products/'+m.id),out=p.qty<=0,buyer=S.me.role==='BUYER',f=p.farm;
+  S.buy={segment:'B2B',qty:Math.max(p.minOrder||1,Math.min(p.qty||1,10)),mode:'AGROLINK',dest:'Luanda',destZone:'Centro',retailKg:1,dest2:'Luanda'};
+  const isFav=buyer?(await api('/favorites/mine').catch(()=>[])).some(x=>x.type==='PRODUCT'&&x.targetId===p.id):false;
+  const segTabs=p.retailEnabled?`<div class="chips" role="group" aria-label="Segmento"><button type="button" class="chip on" id="segB2B">🚚 B2B (interprovincial)</button><button type="button" class="chip" id="segRetail">🏍️ Retalho urbano (kg)</button></div>`:'';
+  return `<div class="pm-head" style="display:flex;gap:16px;align-items:center;padding-right:30px">${tile(p,'big')}<div><h2 style="padding:0">${esc(p.name)}</h2><div class="price" style="font-size:26px">${kz(p.price)}<small> /${UNIT1[p.unit]||p.unit}</small>${p.retailEnabled?` · ${kz(p.retailPriceKg)}<small>/kg no retalho</small>`:''}</div><div class="stock ${out?'bad':''}" style="font-size:17px">${out?'Produto esgotado':'Disponível: '+qtyTxt(p.qty,p.unit)}</div>${p.minOrder>0?`<div class="muted" style="font-size:13px">Lote mínimo B2B: ${fmt(p.minOrder)} ${p.unit}</div>`:''}</div></div>
+  <section class="sec"><h3>Quem vende?</h3>${repCard(f.ownerName,FARM_TYPE[f.type]||f.type,f.verified,f.rating,f.ratingCount,0,null)}<p class="loc" style="margin:8px 0">📍 ${esc(f.province)} → ${esc(f.municipality)} → ${esc(f.name)}</p>${f.verified?'':'<div class="note warn">Este vendedor ainda não tem perfil verificado. O pagamento continua protegido em custódia pelo EPYALINK.</div>'}<div class="row"><button class="btn" data-openfarm="${f.id}">Ver perfil da fazenda</button>${buyer?`<button class="btn" data-favtoggle="FARM:${f.id}">${isFav?'♥ Guardado':'♡ Guardar'}</button><button class="btn" id="askSeller">Perguntar ao vendedor</button>`:''}</div></section>
+  <section class="sec"><h3>O que está a vender?</h3><dl class="kv"><div><dt>Estoque em tempo real</dt><dd>${out?'Esgotado':qtyTxt(p.qty,p.unit)}</dd></div><div><dt>Unidade</dt><dd>${p.unit}</dd></div><div><dt>Preço B2B</dt><dd>${kz(p.price)} por ${UNIT1[p.unit]||p.unit}</dd></div><div><dt>Origem</dt><dd>${esc(f.municipality)}, ${esc(f.province)}</dd></div></dl></section>
+  ${buyer&&!out?`<section class="sec" id="buyform"><h3>Como vai chegar?</h3>${segTabs}
+   <div id="b2bopts" class="opts">
+   <label class="opt"><input type="radio" name="bm" value="RECOLHA" checked><span><b>Eu recolho</b><small>Sem custo de transporte.</small></span></label>
+   <label class="opt"><input type="radio" name="bm" value="VENDEDOR"><span><b>O vendedor entrega</b><small>Custo combinado diretamente com o vendedor.</small></span></label>
+   <label class="opt"><input type="radio" name="bm" value="AGROLINK"><span><b>Transportadora interprovincial EPYALINK</b><small>Preço estimado calculado abaixo.</small></span></label></div>
+   <div id="b2bfields" class="fg2"><label class="blk">Quantidade (${p.unit})<input id="bq" type="number" min="${p.minOrder||1}" max="${p.qty}" value="${S.buy.qty}"></label><label class="blk">Entregar em<select id="bd">${PROV.map(x=>`<option ${S.buy.dest===x?'selected':''}>${x}</option>`).join('')}</select></label></div>
+   <div id="retailfields" class="fg2" hidden><label class="blk">Quantidade (kg)<input id="rkg" type="number" min="1" max="${RETAIL_MAX_KG}" value="1"></label><label class="blk">Cidade<select id="rprov">${PROV.map(x=>`<option ${x==='Luanda'?'selected':''}>${x}</option>`).join('')}</select></label></div>
+   <div id="retailzone" hidden style="margin-bottom:12px"><label class="blk">Zona de entrega<select id="rzone">${ZONES.map(z=>`<option>${z}</option>`).join('')}</select></label></div>
+   <div id="buysum">${await buySummary(p)}</div><button class="btn primary wide" id="orderBtn">Fazer pedido</button></section>`:out?'<div class="note bad">Este produto está esgotado.</div>':''}`;
+ },
+ pay:async m=>{const o=await api('/orders/'+m.id);const total=Number(o.goodsTotal)+Number(o.feeTotal)+Number(o.platformFee||0);return `<h2>Pagar pedido #${o.id.slice(0,8)}</h2><p class="m">${EMO[o.product.category]||''} ${esc(o.product.name)} · ${o.segment==='RETALHO'?fmt(o.retailKg)+' kg':qtyTxt(o.qty,o.product.unit)}</p><div class="sum"><div><span>Produto</span><span>${kz(o.goodsTotal)}</span></div><div><span>Transporte</span><span>${(o.mode==='AGROLINK'||o.mode==='ESTAFETA')?kz(o.feeTotal):'—'}</span></div>${o.platformFee>0?`<div><span>Taxa de plataforma B2B</span><span>${kz(o.platformFee)}</span></div>`:''}<div class="t"><span>Total</span><span>${kz(total)}</span></div></div><fieldset class="opts"><legend>Forma de pagamento</legend>${['Multicaixa Express','Referência de pagamento','Transferência bancária'].map((x,i)=>`<label class="opt"><input type="radio" name="pm" value="${x}" ${i===0?'checked':''}><span>${x}</span></label>`).join('')}</fieldset><div class="note">O valor fica em custódia (escrow) no EPYALINK e só é libertado ao vendedor quando a entrega é validada com o PIN. Simulação: sem ligação bancária real (Multicaixa Express/IBAN exige contrato com banco angolano).</div><button class="btn primary wide" id="doPayBtn">Pagar ${kz(total)}</button>`;},
+ acceptOrder:async m=>{
+  const o=await api('/orders/'+m.id);
+  if(o.segment!=='B2B'||o.mode==='RECOLHA')return `<h2>Aceitar pedido</h2><p class="m">Pedido #${o.id.slice(0,8)}</p><button class="btn primary wide" id="doAcceptBtn" data-id="${o.id}">Aceitar pedido</button>`;
+  let points=[];try{points=await api('/admin/agents?province='+encodeURIComponent(o.farm.province));}catch{}
+  return `<h2>Aceitar pedido</h2><p class="m">Pedido #${o.id.slice(0,8)} · podes indicar um Ponto EPYALINK para a recolha (opcional).</p><label class="blk">Ponto EPYALINK de recolha (opcional)<select id="apoint"><option value="">Sem Ponto — recolha combinada diretamente</option>${points.map(p=>`<option value="${p.id}">${esc(p.pointName)} — ${esc(p.municipality)}${p.verified?' ✓':''}</option>`).join('')}</select></label>${!points.length?'<p class="muted">Ainda não há Pontos EPYALINK registados na tua província.</p>':''}<button class="btn primary wide" id="doAcceptBtn" data-id="${o.id}">Aceitar pedido</button>`;
+ },
+ deliver:async m=>{const o=await api('/orders/'+m.id);return `<h2>Confirmar entrega</h2><p class="m">Pedido #${o.id.slice(0,8)} · ${esc(o.product.name)} · ${o.segment==='RETALHO'?fmt(o.retailKg)+' kg':qtyTxt(o.qty,o.product.unit)}</p><label class="blk">PIN de entrega (pede ao comprador — foi-lhe enviado por SMS)<input id="dcode" inputmode="numeric" maxlength="6" placeholder="000000"></label><label class="blk">Foto da mercadoria (opcional)<input type="file" accept="image/*" capture="environment" data-filedeliver></label><div class="pv" id="pv-deliver"></div><div class="note">A inserção do PIN correto liberta de imediato o valor em custódia para o produtor (e para o transporte, se aplicável).</div><p class="err" id="derr"></p><button class="btn primary wide" id="doDeliverBtn">Confirmar entrega</button>`;},
+ checkpoint:async m=>{
+  const o=await api('/orders/'+m.id);let hubs=[];try{hubs=await api('/admin/hubs');}catch{}
+  const rel=hubs.filter(h=>h.kind==='REGIONAL');
+  return `<h2>Registar passagem em Hub</h2><p class="m">Pedido #${o.id.slice(0,8)}</p><label class="blk">Hub intermédio<select id="hubsel">${rel.map(h=>`<option value="${h.id}">${esc(h.name)} (${esc(h.province)})</option>`).join('')}</select></label><button class="btn primary wide" id="doCheckpointBtn" data-id="${o.id}">Registar passagem</button>`;
+ },
+ track:async m=>{
+  const t=await api('/orders/'+m.id+'/tracking');
+  const remain=t.remainingKm!=null?`${t.remainingKm} km restantes (aprox.)`:'ainda sem posição registada';
+  const cps=t.checkpoints.map(c=>`<li>${stamp(c.at)} — ${esc(c.name)}</li>`).join('')||'<li class="muted">Sem passagens registadas ainda.</li>';
+  return `<h2>Rastreamento GPS</h2><p class="m">${t.live?'🟢 Em curso':'Concluído'} · ${esc(remain)}</p>
+  <dl class="kv"><div><dt>Origem</dt><dd>${t.origin?esc(t.origin.name):'—'}</dd></div><div><dt>Destino</dt><dd>${t.dest?esc(t.dest.name):'—'}</dd></div><div><dt>Última posição</dt><dd>${t.last?stamp(t.last.at)+' · '+t.last.lat.toFixed(4)+', '+t.last.lng.toFixed(4):'Sem sinal ainda'}</dd></div></dl>
+  <h3 style="margin:14px 0 6px">Pontos de passagem</h3><ul style="margin:0;padding-left:18px">${cps}</ul>
+  <p class="muted" style="margin-top:10px;font-size:13px">${t.points.length} pontos GPS registados nesta viagem.</p>`;
+ },
+ rate:async m=>{const o=await api('/orders/'+m.id);S.rate={seller:0,carrier:0};return `<h2>Como correu a compra?</h2><p class="m">Pedido #${o.id.slice(0,8)}</p><h3>${esc(o.farm.name)}</h3>${picker('seller',0)}<label class="blk">Comentário (opcional)<textarea id="rt-seller" rows="2"></textarea></label>${(o.mode==='AGROLINK'||o.mode==='ESTAFETA')?`<h3>Transportador</h3>${picker('carrier',0)}<label class="blk">Comentário (opcional)<textarea id="rt-carrier" rows="2"></textarea></label>`:''}<button class="btn primary wide" id="doRateBtn">Enviar avaliação</button>`;},
+ rateBuyer:async m=>{const o=await api('/orders/'+m.id);S.rate={buyer:0};return `<h2>Avaliar comprador</h2><p class="m">${esc(o.buyerName)} · pedido #${o.id.slice(0,8)}</p>${picker('buyer',0)}<label class="blk">Comentário (opcional)<textarea id="rt-buyer" rows="2"></textarea></label><button class="btn primary wide" id="doRateBuyerBtn">Enviar avaliação</button>`;},
+ dispute:m=>`<h2>Problemas com o pedido?</h2><p class="m">O pagamento fica retido enquanto o administrador analisa.</p><label class="blk">O que aconteceu?<select id="dtype">${['Produto diferente','Quantidade incorreta','Produto danificado','Entrega não realizada','Pagamento contestado','PIN de entrega não reconhecido'].map(x=>`<option>${x}</option>`).join('')}</select></label><label class="blk">Descreve o problema<textarea id="dtext" rows="4"></textarea></label><label class="blk">Foto (opcional)<input type="file" accept="image/*" data-filedispute></label><div class="pv" id="pv-dispute"></div><p class="err" id="derr"></p><button class="btn primary wide" id="doDisputeBtn" data-id="${m.id}">Abrir disputa</button>`,
+ carrierAccept:async m=>{
+  const o=await api('/orders/'+m.id),c=await api('/carrier/me'),kgv=o.segment==='RETALHO'?Number(o.retailKg):Number(o.qty)*(KG[o.product.unit]||1);
+  const ds=c.drivers.filter(d=>d.status==='disponivel'),vs=c.vehicles.filter(v=>v.status==='disponivel'&&v.capacity_tons*1000>=kgv);
+  return `<h2>Aceitar transporte</h2><p class="m">${EMO[o.product.category]||''} ${esc(o.product.name)} · ${fmt(kgv)} kg · ${esc(o.farm.province)} → ${esc(o.destProvince)}${o.destZone?' ('+esc(o.destZone)+')':''} · ~${o.distanceKm} km</p>${ds.length&&vs.length?`<label class="blk">Motorista<select id="cdr">${ds.map(d=>`<option value="${d.id}">${esc(d.name)}</option>`).join('')}</select></label><label class="blk">Veículo (capacidade suficiente)<select id="cve">${vs.map(v=>`<option value="${v.id}">${esc(v.plate)} · ${esc(v.type)} ${v.capacity_tons} t</option>`).join('')}</select></label><button class="btn primary wide" id="doCarrierAcceptBtn">Aceitar e atribuir</button>`:'<div class="note bad">Não há motorista ou veículo disponível com capacidade suficiente. Atualiza a disponibilidade na Frota.</div>'}`;
+ },
+ newProd:()=>`<h2>Novo produto</h2><label class="blk">Nome<input id="np-name" placeholder="Ex.: Milho branco"></label><div class="fg2"><label class="blk">Categoria<select id="np-cat">${CATS.map(c=>`<option>${c}</option>`).join('')}</select></label><label class="blk">Unidade<select id="np-unit">${UNITS.map(c=>`<option>${c}</option>`).join('')}</select></label></div><div class="fg2"><label class="blk">Quantidade<input id="np-qty" type="number" min="1"></label><label class="blk">Preço B2B por unidade (Kz)<input id="np-price" type="number" min="1"></label></div><label class="blk">Lote mínimo B2B (opcional, na mesma unidade)<input id="np-min" type="number" min="0" value="0"></label>
+ <label class="opt" style="margin-bottom:12px"><input type="checkbox" id="np-retail"><span><b>Vender também a retalho urbano</b><small>Fracionado em kg, com entrega porta a porta (só para kg, sacos ou toneladas).</small></span></label>
+ <div id="np-retailprice" hidden class="blk">Preço a retalho por kg (Kz)<input id="np-priceretail" type="number" min="1"></div>
+ <label class="blk">Foto (opcional)<input type="file" accept="image/*" data-filenewprod></label><div class="pv" id="pv-newprod"></div><p class="err" id="derr"></p><button class="btn primary wide" id="doNewProdBtn">Publicar produto</button>`,
+ editProd:async m=>{const p=await api('/products/'+m.id);return `<h2>Editar ${esc(p.name)}</h2><div class="fg2"><label class="blk">Estoque (${p.unit})<input id="ep-qty" type="number" min="0" value="${p.qty}"></label><label class="blk">Preço B2B por ${UNIT1[p.unit]||p.unit} (Kz)<input id="ep-price" type="number" min="1" value="${p.price}"></label></div><label class="blk">Lote mínimo B2B<input id="ep-min" type="number" min="0" value="${p.minOrder||0}"></label><label class="opt" style="margin-bottom:12px"><input type="checkbox" id="ep-retail" ${p.retailEnabled?'checked':''}><span><b>Vender a retalho urbano</b></span></label><div class="blk">Preço a retalho por kg (Kz)<input id="ep-priceretail" type="number" min="1" value="${p.retailPriceKg||''}"></div><p class="err" id="derr"></p><button class="btn primary wide" id="doEditProdBtn" data-id="${p.id}">Guardar alterações</button>`;},
+ editAbout:async()=>{const f=await api('/farms/me/mine');return `<h2>Editar fazenda</h2><label class="blk">Nome<input id="ea-name" value="${esc(f.name)}"></label><label class="blk">Descrição<textarea id="ea-about" rows="4">${esc(f.about||'')}</textarea></label><button class="btn primary wide" id="doEditAboutBtn">Guardar</button>`;},
+ withdraw:async()=>`<h2>Pedir levantamento</h2><p class="m">Vais receber um código de confirmação por SMS.</p><label class="blk">Valor a levantar (Kz)<input id="wd-amount" type="number" min="5000"></label><p class="err" id="derr"></p><button class="btn primary wide" id="doWithdrawBtn">Pedir código</button>`,
+ withdrawConfirm:m=>`<h2>Confirmar levantamento</h2><p class="m">Introduz o código de 6 dígitos recebido por SMS.</p>${m.devCode?`<p class="ok">Modo de teste: código ${esc(m.devCode)}</p>`:''}<label class="blk">Código<input id="wdc-code" inputmode="numeric" maxlength="6"></label><p class="err" id="derr"></p><button class="btn primary wide" id="doWithdrawConfirmBtn" data-id="${m.withdrawalId}">Confirmar</button>`,
+ img:m=>`<h2>${esc(m.title||'Evidência')}</h2><img class="full" alt="${esc(m.title||'')}" src="${m.src}">`
+};
+function closeModal(silent){S.modal=null;const box=$('#modal');box.hidden=true;box.innerHTML='';if(!silent)renderMain();}
+async function openModal(m){S.modal=m;const box=$('#modal');box.hidden=false;box.innerHTML='<div class="ov" data-closemodal></div><div class="dlg"><div class="loading">A carregar…</div></div>';
+ try{const html=await MOD[m.type](m);if(S.modal===m)box.innerHTML=`<div class="ov" data-closemodal></div><div class="dlg" role="dialog" aria-modal="true">${'<button class="x" data-closemodal>×</button>'}${html}</div>`;}
+ catch(x){if(S.modal===m)box.innerHTML=`<div class="ov" data-closemodal></div><div class="dlg"><button class="x" data-closemodal>×</button>${empty('Não foi possível carregar',x.message)}</div>`;}
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-closemodal]'))closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&S.modal)closeModal();});
+document.addEventListener('click',e=>{
+ if(e.target.id==='segB2B'||e.target.id==='segRetail'){
+  S.buy.segment=e.target.id==='segB2B'?'B2B':'RETALHO';
+  $('#segB2B').classList.toggle('on',S.buy.segment==='B2B');$('#segRetail').classList.toggle('on',S.buy.segment==='RETALHO');
+  $('#b2bopts').hidden=S.buy.segment!=='B2B';$('#b2bfields').hidden=S.buy.segment!=='B2B';
+  $('#retailfields').hidden=S.buy.segment!=='RETALHO';$('#retailzone').hidden=S.buy.segment!=='RETALHO';
+  updateBuySum();
+ }
+});
+document.addEventListener('change',e=>{if(e.target.closest('#buyform'))updateBuySum();});
+document.addEventListener('input',e=>{if(e.target.closest('#buyform'))updateBuySum();});
+async function updateBuySum(){
+ if(S.buy.segment==='RETALHO'){S.buy.retailKg=parseInt($('#rkg').value)||0;S.buy.dest=$('#rprov').value;S.buy.destZone=$('#rzone').value;}
+ else{const bm=$('input[name=bm]:checked');if(bm)S.buy.mode=bm.value;S.buy.qty=parseFloat($('#bq').value)||0;S.buy.dest=$('#bd').value;}
+ const p=await api('/products/'+S.modal.id);const el=$('#buysum');if(el)el.innerHTML=await buySummary(p);
+}
+document.addEventListener('click',async e=>{
+ if(e.target.id==='askSeller'){const p=await api('/products/'+S.modal.id);const r=await api('/threads',{method:'POST',body:JSON.stringify({productId:p.id})});S.threadId=r.id;closeModal(true);go('chat');}
+ if(e.target.id==='orderBtn'){
+  const b=S.buy,body=b.segment==='RETALHO'?{productId:S.modal.id,segment:'RETALHO',retailKg:b.retailKg,destProvince:b.dest,destZone:b.destZone}:{productId:S.modal.id,segment:'B2B',qty:b.qty,mode:b.mode,destProvince:b.dest};
+  try{await api('/orders',{method:'POST',body:JSON.stringify(body)});closeModal(true);S.sub.orders='list';go('orders');toast('Pedido criado. Falta pagar.');}
+  catch(x){toast(x.message);}
+ }
+ if(e.target.id==='doPayBtn'){const pm=$('input[name=pm]:checked');try{await api('/orders/'+S.modal.id+'/pay',{method:'POST',body:JSON.stringify({payMethod:pm?pm.value:'Multicaixa Express'})});closeModal();toast('Pagamento confirmado. Valor em custódia.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doAcceptBtn'){const id=e.target.dataset.id,sel=$('#apoint');try{await api('/orders/'+id+'/accept',{method:'POST',body:JSON.stringify({pointId:sel?sel.value||undefined:undefined})});closeModal();toast('Pedido aceite.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doDeliverBtn'){const pin=$('#dcode').value;try{await api('/orders/'+S.modal.id+'/deliver',{method:'POST',body:JSON.stringify({pin,photoUrl:TMP.deliver||null})});TMP.deliver=null;closeModal();toast('Entrega validada. Custódia libertada.');}catch(x){$('#derr').textContent=x.message;}}
+ if(e.target.id==='doCheckpointBtn'){const id=e.target.dataset.id,hubId=$('#hubsel').value;try{await api('/orders/'+id+'/checkpoint',{method:'POST',body:JSON.stringify({hubId})});closeModal();toast('Passagem registada.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doRateBtn'){if(!S.rate.seller)return toast('Escolhe uma nota para o vendedor.');try{await api('/orders/'+S.modal.id+'/rate',{method:'POST',body:JSON.stringify({sellerStars:S.rate.seller,sellerText:$('#rt-seller')?.value||'',carrierStars:S.rate.carrier||undefined,carrierText:$('#rt-carrier')?.value||''})});closeModal();toast('Obrigado pela avaliação.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doRateBuyerBtn'){if(!S.rate.buyer)return toast('Escolhe uma nota.');try{await api('/orders/'+S.modal.id+'/rate-buyer',{method:'POST',body:JSON.stringify({stars:S.rate.buyer,text:$('#rt-buyer').value})});closeModal();toast('Comprador avaliado.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doDisputeBtn'){const id=e.target.dataset.id,type=$('#dtype').value,text=$('#dtext').value;if(text.trim().length<10){$('#derr').textContent='Descreve o problema com pelo menos 10 caracteres.';return;}try{await api('/orders/'+id+'/dispute',{method:'POST',body:JSON.stringify({type,text,photoUrl:TMP.dispute||null})});TMP.dispute=null;closeModal(true);S.sub.orders='disputes';go('orders');toast('Disputa registada.');}catch(x){$('#derr').textContent=x.message;}}
+ if(e.target.id==='doCarrierAcceptBtn'){const d=$('#cdr').value,v=$('#cve').value;try{await api('/orders/'+S.modal.id+'/carrier-accept',{method:'POST',body:JSON.stringify({driverId:d,vehicleId:v})});closeModal(true);S.sub.jobs='mine';go('jobs');toast('Transporte aceite.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doNewProdBtn'){const name=$('#np-name').value.trim(),cat=$('#np-cat').value,unit=$('#np-unit').value,qty=+$('#np-qty').value,price=+$('#np-price').value,minOrder=+$('#np-min').value||0,retailEnabled=$('#np-retail').checked,retailPriceKg=retailEnabled?+$('#np-priceretail').value:undefined;
+  if(!name||!(qty>0)||!(price>0)){$('#derr').textContent='Preenche nome, quantidade e preço.';return;}
+  try{await api('/products',{method:'POST',body:JSON.stringify({name,category:cat,unit,qty,price,minOrder,retailEnabled,retailPriceKg,photoUrl:TMP.newprod||null})});TMP.newprod=null;closeModal();toast('Produto publicado.');}catch(x){$('#derr').textContent=x.message;}}
+ if(e.target.id==='doEditProdBtn'){const id=e.target.dataset.id,qty=+$('#ep-qty').value,price=+$('#ep-price').value,minOrder=+$('#ep-min').value||0,retailEnabled=$('#ep-retail').checked,retailPriceKg=$('#ep-priceretail').value?+$('#ep-priceretail').value:undefined;try{await api('/products/'+id,{method:'PUT',body:JSON.stringify({qty,price,minOrder,retailEnabled,retailPriceKg})});closeModal();toast('Produto atualizado.');}catch(x){$('#derr').textContent=x.message;}}
+ if(e.target.id==='doEditAboutBtn'){try{await api('/farms/me/mine',{method:'PUT',body:JSON.stringify({name:$('#ea-name').value,about:$('#ea-about').value})});closeModal();toast('Fazenda atualizada.');}catch(x){toast(x.message);}}
+ if(e.target.id==='doWithdrawBtn'){const amount=+$('#wd-amount').value;try{const r=await api('/wallet/withdraw',{method:'POST',body:JSON.stringify({amount})});openModal({type:'withdrawConfirm',withdrawalId:r.withdrawalId,devCode:r.devCode});}catch(x){$('#derr').textContent=x.message;}}
+ if(e.target.id==='doWithdrawConfirmBtn'){const id=e.target.dataset.id,code=$('#wdc-code').value;try{await api('/wallet/withdraw/'+id+'/confirm',{method:'POST',body:JSON.stringify({code})});closeModal();toast('Levantamento confirmado.');}catch(x){$('#derr').textContent=x.message;}}
+});
+document.addEventListener('change',e=>{if(e.target.id==='np-retail')$('#np-retailprice').hidden=!e.target.checked;});
+document.addEventListener('change',e=>{
+ const t=e.target;if(t.type!=='file'||!t.files[0])return;
+ if(t.dataset.filedeliver!==undefined)readImage(t.files[0],url=>{TMP.deliver=url;const pv=$('#pv-deliver');if(pv)pv.innerHTML=`<img alt="Pré-visualização" src="${url}">`;});
+ if(t.dataset.filedispute!==undefined)readImage(t.files[0],url=>{TMP.dispute=url;const pv=$('#pv-dispute');if(pv)pv.innerHTML=`<img alt="Pré-visualização" src="${url}">`;});
+ if(t.dataset.filenewprod!==undefined)readImage(t.files[0],url=>{TMP.newprod=url;const pv=$('#pv-newprod');if(pv)pv.innerHTML=`<img alt="Pré-visualização" src="${url}">`;});
+ if(t.dataset.fileavatar!==undefined)readImage(t.files[0],async url=>{try{await api('/farms/me/mine',{method:'PUT',body:JSON.stringify({avatarUrl:url})});toast('Foto de perfil atualizada.');renderMain();}catch(x){toast(x.message);}});
+ if(t.dataset.filefarmphoto!==undefined)readImage(t.files[0],async url=>{try{await api('/farms/me/photos',{method:'POST',body:JSON.stringify({url})});toast('Foto adicionada.');renderMain();}catch(x){toast(x.message);}});
+});
+
+/* ---------- start ---------- */
+boot();
+})();
+</script>
+</body>
+</html>
+
