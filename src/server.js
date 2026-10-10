@@ -54,7 +54,7 @@ async function criarAdminSeguro() {
     }
 
     const result = await pool.query(
-      "UPDATE users SET role = 'ADMIN' WHERE REGEXP_REPLACE(phone, '\\D', '', 'g') LIKE '%' || $1 || '%' RETURNING id, phone, role;",
+      "UPDATE users SET role = 'ADMIN' WHERE REGEXP_REPLACE(phone, '\\\\D', '', 'g') LIKE '%' || $1 || '%' RETURNING id, phone, role;",
       [cleanPhone]
     );
 
