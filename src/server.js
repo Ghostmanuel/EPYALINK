@@ -43,9 +43,12 @@ async function ensureSchema() {
 
 const PORT = process.env.PORT || 3000;
 ensureSchema()
-  .then(() => {
-    app.listen(PORT, () => console.log(`EPYALINK server a correr na porta ${PORT}`));
-  })
+    .then(async () => {
+        // Chamamos a função de criação do admin aqui dentro, antes do servidor aceitar pedidos
+        await criarAdminSeguro();
+
+        app.listen(PORT, () => console.log(`EPYALINK server a correr na porta ${PORT}`));
+    })
   .catch((e) => {
     console.error('Falha ao preparar a base de dados:', e);
     process.exit(1);
