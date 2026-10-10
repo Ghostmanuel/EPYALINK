@@ -40,6 +40,32 @@ async function ensureSchema() {
   const schema = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
   await pool.query(schema);
 }
+// 1. Defina a função aqui em cima
+async function criarAdminSeguro() {
+    try {
+        const adminPhone = process.env.ADMIN_PHONE;
+        const adminPassword = process.env.ADMIN_PASSWORD;
+
+        if (!adminPhone || !adminPassword) {
+            console.log("Variáveis ADMIN_PHONE ou ADMIN_PASSWORD não configuradas no Render.");
+            return;
+        }
+
+        const checkUser = await pool.query('SELECT * FROM users WHERE phone = $1', [adminPhone]);
+
+        if (checkUser.rows.length === 0) {
+            await pool.query(
+                'INSERT INTO users (phone, password, role) VALUES ($1, $2, $3)',
+                [adminPhone, adminPassword, 'admin']
+            );
+            console.log('Utilizador Administrador criado automaticamente com sucesso!');
+        } else {
+            console.log('Utilizador Administrador já se encontra registado.');
+        }
+    } catch (error) {
+        console.error('Erro ao verificar/criar o administrador:', error);
+    }
+}
 
 const PORT = process.env.PORT || 3000;
 ensureSchema()
