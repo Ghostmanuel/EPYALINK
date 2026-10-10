@@ -41,6 +41,8 @@ async function ensureSchema() {
   await pool.query(schema);
 }
 // 1. Defina a função aqui em cima
+const bcrypt = require('bcrypt'); // Certifique-se de que o bcrypt está disponível no server.js
+
 async function criarAdminSeguro() {
     try {
         const adminPhone = process.env.ADMIN_PHONE;
@@ -51,21 +53,36 @@ async function criarAdminSeguro() {
             return;
         }
 
+        // Gera o hash seguro da password
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
+
+        // Verifica se o utilizador já existe pelo telefone
         const checkUser = await pool.query('SELECT * FROM users WHERE phone = $1', [adminPhone]);
 
         if (checkUser.rows.length === 0) {
+            // Se não existe, cria o admin com todos os campos obrigatórios da tabela
             await pool.query(
-                'INSERT INTO users (phone, password, role) VALUES ($1, $2, $3)',
-                [adminPhone, adminPassword, 'admin']
+                `INSERT INTO users (name, phone, password_hash, role) 
+                 VALUES ($1, $2, $3, $4)`,
+                ['Administrador EPYALINK', adminPhone, passwordHash, 'admin']
             );
-            console.log('Utilizador Administrador criado automaticamente com sucesso!');
+            console.log('Utilizador Administrador criado com sucesso!');
         } else {
-            console.log('Utilizador Administrador já se encontra registado.');
+            // Se já existe (ex: conta antiga de produtor), força a atualização para ADMIN e atualiza a password
+            await pool.query(
+                `UPDATE users 
+                 SET role = 'admin', password_hash = $1 
+                 WHERE phone = $2`,
+                [passwordHash, adminPhone]
+            );
+            console.log('Conta existente promovida a Administrador com sucesso!');
         }
     } catch (error) {
-        console.error('Erro ao verificar/criar o administrador:', error);
+        console.error('Erro detalhado ao criar/atualizar o administrador:', error);
     }
 }
+
 
 const PORT = process.env.PORT || 3000;
 ensureSchema()
