@@ -44,46 +44,39 @@ async function ensureSchema() {
 const bcrypt = require('bcrypt'); // Certifique-se de que o bcrypt está disponível no server.js
 
 async function criarAdminSeguro() {
-    try {
-        const adminPhone = process.env.ADMIN_PHONE;
-        const adminPassword = process.env.ADMIN_PASSWORD;
+  try {
+    const rawPhone = process.env.ADMIN_PHONE || '';
+    const cleanPhone = rawPhone.replace(/\D/g, ''); // Remove símbolos e garante só os dígitos
+    const rawPassword = process.env.ADMIN_PASSWORD;
 
-        if (!adminPhone || !adminPassword) {
-            console.log("Variáveis ADMIN_PHONE ou ADMIN_PASSWORD não configuradas no Render.");
-            return;
-        }
-
-        // Gera o hash seguro da password
-        const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(adminPassword, saltRounds);
-
-        // Verifica se o utilizador já existe pelo telefone
-        const checkUser = await pool.query('SELECT * FROM users WHERE phone = $1', [adminPhone]);
-
-        if (checkUser.rows.length === 0) {
-            // Se não existe, cria o admin com todos os campos obrigatórios da tabela
-            await pool.query(
-                `INSERT INTO users (name, phone, password_hash, role) 
-                 VALUES ($1, $2, $3, $4)`,
-                ['Administrador EPYALINK', adminPhone, passwordHash, 'admin']
-            );
-            console.log('Utilizador Administrador criado com sucesso!');
-        } else {
-            // Se já existe (ex: conta antiga de produtor), força a atualização para ADMIN e atualiza a password
-            await pool.query(
-                `UPDATE users 
-                 SET role = 'admin', password_hash = $1 
-                 WHERE phone = $2`,
-                [passwordHash, adminPhone]
-            );
-            console.log('Conta existente promovida a Administrador com sucesso!');
-        }
-    } catch (error) {
-        console.error('Erro detalhado ao criar/atualizar o administrador:', error);
+    if (!cleanPhone || !rawPassword) {
+      console.log('Variáveis ADMIN_PHONE ou ADMIN_PASSWORD não configuradas.');
+      return;
     }
+
+    // Cria o hash seguro da palavra-passe com bcrypt
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(rawPassword, saltRounds);
+
+    // Atualiza o utilizador para admin, ignorando formatações do número (como +244)
+    const queryText = `
+      UPDATE users 
+      SET role = 'admin', password = $1 
+      WHERE REGEXP_REPLACE(phone, '\\D', '', 'g') LIKE '%' || $2 || '%'
+      RETURNING *;
+    `;
+
+    const result = await pool.query(queryText, [hashedPassword, cleanPhone]);
+
+    if (result.rows.length > 0) {
+      console.log('Conta existente promovida a Administrador com sucesso!');
+    } else {
+      console.log('Nenhum utilizador encontrado com o número especificado para promover a admin.');
+    }
+  } catch (error) {
+    console.error('Erro ao configurar o administrador:', error);
+  }
 }
-
-
 const PORT = process.env.PORT || 3000;
 ensureSchema()
     .then(async () => {
