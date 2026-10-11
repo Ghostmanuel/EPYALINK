@@ -4,7 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { pool } = require('./db');
-
+const { calcularRota } = require('./services/orservice'); // Certifique-se de que o caminho está correto
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '8mb' }));
@@ -24,12 +24,15 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/market', require('./routes/market'));
 app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/agent', require('./routes/agent'));
-
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: 'Erro interno do servidor.' });
-});
-
+app.post('/api/calcular-rota', async (req, res) => {
+  try {
+    const { coordenadasOrigem, coordenadasDestino } = req.body;
+    const resultado = await calcularRota(coordenadasOrigem, coordenadasDestino);
+    res.json({sucesso: true, dados: resultado});
+  } catch (error) {
+    console.error('[SERVER] Erro ao calcular a rota:', error);
+    res.status(500).json({ sucesso: false, mensagem: 'Erro interno do servidor.' });
+  }
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
