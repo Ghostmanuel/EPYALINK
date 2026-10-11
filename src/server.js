@@ -4,7 +4,7 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { pool } = require('./db');
-const { calcularRota } = require('./services/orservice'); // Certifique-se de que o caminho está correto
+const { calcularRota } = require('./services/orservices'); // Certifique-se de que o caminho está correto
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '8mb' }));
