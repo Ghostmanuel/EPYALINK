@@ -33,6 +33,7 @@ app.post('/api/calcular-rota', async (req, res) => {
     console.error('[SERVER] Erro ao calcular a rota:', error);
     res.status(500).json({ sucesso: false, mensagem: 'Erro interno do servidor.' });
   }
+});
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
