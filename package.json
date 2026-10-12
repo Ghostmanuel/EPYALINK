@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "express-rate-limit": "^7.2.0",
-    "express": "^7.0.1",
+    "express": "^4.19.2",
     "helmet": "^7.0.1",
     "morgan": "^1.10.2",
     "node-fetch": "^3.3.2",
