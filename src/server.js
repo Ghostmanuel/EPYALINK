@@ -6,9 +6,16 @@ const cors = require('cors');
 const { pool } = require('./db');
 const { calcularRota } = require('./services/orservices'); // Certifique-se de que o caminho está correto
 const app = express();
+const helmet = require('helmet');
+const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100 // limite de 100 pedidos por IP
+});
+app.use(limiter);
 app.use(cors());
 app.use(express.json({ limit: '8mb' }));
-
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.use('/api/auth', require('./routes/auth'));
