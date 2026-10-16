@@ -4,18 +4,11 @@ const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { pool } = require('./db');
-const { calcularRota } = require('./services/orservices'); // Certifique-se de que o caminho está correto
+
 const app = express();
-const helmet = require('helmet');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100 // limite de 100 pedidos por IP
-});
-app.use(limiter);
 app.use(cors());
 app.use(express.json({ limit: '8mb' }));
+
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
 app.use('/api/auth', require('./routes/auth'));
@@ -31,16 +24,12 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/market', require('./routes/market'));
 app.use('/api/wallet', require('./routes/wallet'));
 app.use('/api/agent', require('./routes/agent'));
-app.post('/api/calcular-rota', async (req, res) => {
-  try {
-    const { coordenadasOrigem, coordenadasDestino } = req.body;
-    const resultado = await calcularRota(coordenadasOrigem, coordenadasDestino);
-    res.json({sucesso: true, dados: resultado});
-  } catch (error) {
-    console.error('[SERVER] Erro ao calcular a rota:', error);
-    res.status(500).json({ sucesso: false, mensagem: 'Erro interno do servidor.' });
-  }
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Erro interno do servidor.' });
 });
+
 app.use(express.static(path.join(__dirname, '..', 'public')));
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) return next();
@@ -51,42 +40,12 @@ async function ensureSchema() {
   const schema = fs.readFileSync(path.join(__dirname, '..', 'db', 'schema.sql'), 'utf8');
   await pool.query(schema);
 }
-// 1. Defina a função aqui em cima
-const bcrypt = require('bcrypt'); // Certifique-se de que o bcrypt está disponível no server.js
-
-async function criarAdminSeguro() {
-  try {
-    const rawPhone = process.env.ADMIN_PHONE || '';
-    const cleanPhone = rawPhone.replace(/\D/g, ''); 
-
-    if (!cleanPhone) {
-      console.log('[ADMIN] Variável ADMIN_PHONE não configurada.');
-      return;
-    }
-
-    const result = await pool.query(
-      "UPDATE users SET role = 'ADMIN' WHERE REGEXP_REPLACE(phone, '\\\\D', '', 'g') LIKE '%' || $1 || '%' RETURNING id, phone, role;",
-      [cleanPhone]
-    );
-
-    if (result.rows.length > 0) {
-      console.log('[ADMIN] Utilizador promovido a admin com sucesso:', result.rows[0]);
-    } else {
-      console.log('[ADMIN] Nenhum utilizador encontrado com o número configurado.');
-    }
-  } catch (error) {
-    console.error('[ADMIN] Erro ao promover admin:', error);
-  }
-}
 
 const PORT = process.env.PORT || 3000;
 ensureSchema()
-    .then(async () => {
-        // Chamamos a função de criação do admin aqui dentro, antes do servidor aceitar pedidos
-        await criarAdminSeguro();
-
-        app.listen(PORT, () => console.log(`EPYALINK server a correr na porta ${PORT}`));
-    })
+  .then(() => {
+    app.listen(PORT, () => console.log(`EPYALINK server a correr na porta ${PORT}`));
+  })
   .catch((e) => {
     console.error('Falha ao preparar a base de dados:', e);
     process.exit(1);
